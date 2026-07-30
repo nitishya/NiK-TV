@@ -1,0 +1,6 @@
+{
+  "name": "NiK TV",
+  "description": "NiK TV - Premium Web Engine & Streaming Player for Android Phone, Android TV, and Google TV.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
