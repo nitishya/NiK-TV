@@ -1,0 +1,53 @@
+name: Build and Release Android APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build APK & Create Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NiK-TV-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+      - name: Create GitHub Release with APK
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/heads/main')
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: NiK-TV Release v1.0.${{ github.run_number }}
+          body: |
+            Automated build of NiK-TV Android & Android TV Application.
+            
+            ### Included Features:
+            - Production Native `NiKWebView` Engine with HTML5 video streaming.
+            - Full Android TV D-Pad Remote Navigation.
+            - Runtime Permissions for Audio/Voice Search & Storage.
+            - Compatible with Android 9 (API 28) through Android 14+.
+          files: app/build/outputs/apk/debug/app-debug.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
