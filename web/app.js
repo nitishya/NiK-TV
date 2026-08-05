@@ -170,18 +170,38 @@ document.addEventListener('DOMContentLoaded', () => {
     sideMenu.classList.toggle('collapsed');
   });
 
+  // Helper to switch view panels
+  function switchViewPanel(targetId) {
+    document.querySelectorAll('.nav-item').forEach(i => {
+      if (i.dataset.target === targetId) {
+        i.classList.add('active');
+      } else {
+        i.classList.remove('active');
+      }
+    });
+    document.querySelectorAll('.view-panel').forEach(v => {
+      if (v.id === targetId) {
+        v.classList.add('active');
+      } else {
+        v.classList.remove('active');
+      }
+    });
+
+    if (targetId === 'favorites-view') renderFavoritesGrid();
+    if (targetId === 'recent-view') renderRecentGrid();
+    if (targetId === 'categories-view') renderCategoriesView();
+  }
+
   document.querySelectorAll('.nav-item').forEach(item => {
     item.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
-      
-      item.classList.add('active');
-      const targetId = item.dataset.target;
-      document.getElementById(targetId).classList.add('active');
+      switchViewPanel(item.dataset.target);
+    });
+  });
 
-      if (targetId === 'favorites-view') renderFavoritesGrid();
-      if (targetId === 'recent-view') renderRecentGrid();
-      if (targetId === 'categories-view') renderCategoriesView();
+  document.querySelectorAll('.footer-link-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchViewPanel(btn.dataset.target);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
 
