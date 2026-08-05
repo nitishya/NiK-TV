@@ -6,7 +6,7 @@
 
 This contains everything you need to run your app locally.
 
-View your app in AI Studio: https://ai.studio/apps/f620df96-fb1d-4ae7-b6fa-e70fcdfe8b84
+View the app: https://ni-k-tv.vercel.app/
 
 ## Run Locally
 
