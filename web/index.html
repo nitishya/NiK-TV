@@ -3,197 +3,322 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>NiK-TV | Universal Stream Hub</title>
-  <!-- Google Fonts & FontAwesome -->
+  <title>Nik-TV | Premium OTT Web Launcher</title>
+  <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <!-- HLS.js for Live Stream Playback -->
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="theme-dark">
+
+  <!-- SPLASH SCREEN ANIMATION -->
+  <div id="splash-screen" class="splash-screen">
+    <div class="splash-content">
+      <div class="splash-logo">
+        <i class="fa-solid fa-play splash-play"></i>
+        <span>Nik<span class="highlight">TV</span></span>
+      </div>
+      <div class="splash-spinner"></div>
+      <p class="splash-text">LOADING YOUR OTT LAUNCHER...</p>
+    </div>
+  </div>
+
+  <!-- APP WRAPPER -->
   <div id="app" class="app-layout">
 
-    <!-- TOP HEADER / BROWSER NAVBAR -->
-    <header class="navbar" id="navbar">
-      <div class="nav-left">
-        <div class="brand">
-          <i class="fa-solid fa-tv brand-icon"></i>
-          <span class="brand-name">NiK<span class="brand-highlight">-TV</span></span>
-          <span class="badge-tag">UNIVERSAL</span>
-        </div>
-        <div class="nav-controls">
-          <button class="icon-btn focusable" id="btn-back" title="Back (Alt+Left)"><i class="fa-solid fa-arrow-left"></i></button>
-          <button class="icon-btn focusable" id="btn-forward" title="Forward (Alt+Right)"><i class="fa-solid fa-arrow-right"></i></button>
-          <button class="icon-btn focusable" id="btn-refresh" title="Refresh Stream (R)"><i class="fa-solid fa-rotate-right"></i></button>
-        </div>
-      </div>
-
-      <!-- Address & Stream Search Bar -->
-      <div class="address-bar-container">
-        <i class="fa-solid fa-lock text-success lock-icon"></i>
-        <input type="text" id="stream-url-input" class="address-input focusable" placeholder="Enter stream URL (.m3u8, .mp4, YouTube)..." value="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" autocomplete="off" spellcheck="false">
-        <button class="btn-primary load-btn focusable" id="btn-load-stream">
-          <i class="fa-solid fa-play"></i> <span class="btn-text">PLAY</span>
+    <!-- SIDE NAVIGATION MENU (COLLAPSIBLE DRAWER) -->
+    <aside id="side-menu" class="side-menu collapsed">
+      <button id="btn-toggle-menu" class="menu-toggle-btn focusable" title="Toggle Menu (M)">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <nav class="nav-links">
+        <button class="nav-item active focusable" data-target="home-view" title="Home">
+          <i class="fa-solid fa-house"></i>
+          <span class="link-text">Home</span>
         </button>
+        <button class="nav-item focusable" data-target="favorites-view" title="Favorites">
+          <i class="fa-solid fa-star"></i>
+          <span class="link-text">Favorites</span>
+        </button>
+        <button class="nav-item focusable" data-target="recent-view" title="Recently Opened">
+          <i class="fa-solid fa-clock-rotate-left"></i>
+          <span class="link-text">Recent</span>
+        </button>
+        <button class="nav-item focusable" data-target="categories-view" title="Categories">
+          <i class="fa-solid fa-border-all"></i>
+          <span class="link-text">Categories</span>
+        </button>
+        <button class="nav-item focusable" data-target="settings-view" title="Settings">
+          <i class="fa-solid fa-gear"></i>
+          <span class="link-text">Settings</span>
+        </button>
+      </nav>
+      <div class="side-menu-footer">
+        <span class="tv-mode-badge"><i class="fa-solid fa-tv"></i> TV READY</span>
       </div>
+    </aside>
 
-      <div class="nav-right">
-        <button class="icon-btn focusable" id="btn-voice-search" title="Voice Search"><i class="fa-solid fa-microphone"></i></button>
-        <button class="icon-btn focusable" id="btn-toggle-fullscreen" title="Toggle Fullscreen (F)"><i class="fa-solid fa-expand"></i></button>
-        <button class="icon-btn focusable" id="btn-settings" title="Settings"><i class="fa-solid fa-gear"></i></button>
-      </div>
-    </header>
+    <!-- MAIN BODY CONTAINER -->
+    <div class="main-wrapper">
 
-    <!-- MAIN WORKSPACE -->
-    <main class="main-content">
-      
-      <!-- HERO PLAYER SECTION -->
-      <section class="hero-player-section">
-        <div class="player-wrapper" id="player-container">
-          
-          <!-- Video Element & Fallback Frame -->
-          <video id="video-player" class="video-element" controls crossorigin playsinline poster="https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=1200&auto=format&fit=crop"></video>
-          <iframe id="iframe-player" class="iframe-element hidden" allowfullscreen allow="autoplay; encrypted-media"></iframe>
-
-          <!-- Overlay Player Controls Bar -->
-          <div class="player-overlay" id="player-overlay">
-            <div class="stream-badge-row">
-              <span class="live-pill"><i class="fa-solid fa-circle pulse-dot"></i> LIVE</span>
-              <span class="stream-quality-tag" id="quality-tag">1080p60</span>
+      <!-- STICKY GLASSMORPHISM HEADER -->
+      <header class="header" id="header">
+        <div class="header-left">
+          <div class="brand">
+            <div class="logo-box">
+              <i class="fa-solid fa-tv"></i>
             </div>
+            <span class="brand-name">Nik<span class="brand-highlight">-TV</span></span>
+          </div>
+        </div>
+
+        <!-- CENTER SEARCH BAR -->
+        <div class="search-box-container">
+          <i class="fa-solid fa-magnifying-glass search-icon"></i>
+          <input type="text" id="search-input" class="search-input focusable" placeholder="Search websites, channels, streams..." autocomplete="off" spellcheck="false">
+          <button id="btn-clear-search" class="clear-search-btn hidden"><i class="fa-solid fa-circle-xmark"></i></button>
+        </div>
+
+        <div class="header-right">
+          <button class="icon-btn focusable" id="btn-add-modal" title="Add Website URL"><i class="fa-solid fa-plus"></i></button>
+          <button class="icon-btn focusable" id="btn-notifications" title="Notifications"><i class="fa-solid fa-bell"></i><span class="notif-badge"></span></button>
+          <button class="icon-btn focusable" id="btn-header-fav" title="Favorites"><i class="fa-solid fa-star"></i></button>
+          <button class="icon-btn focusable" id="btn-settings-page" title="Settings"><i class="fa-solid fa-gear"></i></button>
+          <div class="profile-avatar focusable" tabindex="0" title="User Profile">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop" alt="Profile">
+          </div>
+        </div>
+      </header>
+
+      <!-- CATEGORY CHIPS BAR -->
+      <div class="category-bar-wrapper">
+        <div class="category-chips" id="category-chips">
+          <button class="chip focusable active" data-category="All"><i class="fa-solid fa-compass"></i> All</button>
+          <button class="chip focusable" data-category="Movies"><i class="fa-solid fa-film"></i> Movies</button>
+          <button class="chip focusable" data-category="Live TV"><i class="fa-solid fa-tv"></i> Live TV</button>
+          <button class="chip focusable" data-category="Sports"><i class="fa-solid fa-futbol"></i> Sports</button>
+          <button class="chip focusable" data-category="News"><i class="fa-solid fa-newspaper"></i> News</button>
+          <button class="chip focusable" data-category="Kids"><i class="fa-solid fa-child-reaching"></i> Kids</button>
+          <button class="chip focusable" data-category="Music"><i class="fa-solid fa-music"></i> Music</button>
+          <button class="chip focusable" data-category="Education"><i class="fa-solid fa-graduation-cap"></i> Education</button>
+          <button class="chip focusable" data-category="Shopping"><i class="fa-solid fa-cart-shopping"></i> Shopping</button>
+          <button class="chip focusable" data-category="Technology"><i class="fa-solid fa-microchip"></i> Technology</button>
+        </div>
+      </div>
+
+      <!-- MAIN CONTENT VIEWS -->
+      <main class="content-container">
+
+        <!-- DASHBOARD HOME VIEW -->
+        <div id="home-view" class="view-panel active">
+
+          <!-- HERO SECTION: CONTINUE BROWSING -->
+          <section class="hero-section" id="hero-section">
+            <div class="section-title-row">
+              <h2 class="section-title"><i class="fa-solid fa-play-circle text-accent"></i> Continue Browsing</h2>
+              <span class="section-subtitle">Featured & Recent Portals</span>
+            </div>
+
+            <div class="hero-carousel" id="hero-carousel">
+              <!-- Rendered via JS -->
+            </div>
+          </section>
+
+          <!-- OTT HORIZONTAL SECTIONS CONTAINER -->
+          <div id="ott-sections-container" class="ott-sections">
+            <!-- Sections rendered dynamically by app.js -->
+          </div>
+
+        </div>
+
+        <!-- FAVORITES VIEW -->
+        <div id="favorites-view" class="view-panel">
+          <div class="section-title-row">
+            <h2 class="section-title"><i class="fa-solid fa-star text-warning"></i> Bookmarked Websites</h2>
+          </div>
+          <div class="ott-grid" id="favorites-grid"></div>
+        </div>
+
+        <!-- RECENT VIEW -->
+        <div id="recent-view" class="view-panel">
+          <div class="section-title-row">
+            <h2 class="section-title"><i class="fa-solid fa-clock-rotate-left text-primary"></i> Recently Opened</h2>
+            <button id="btn-clear-history" class="btn-text-danger focusable"><i class="fa-solid fa-trash"></i> Clear History</button>
+          </div>
+          <div class="ott-grid" id="recent-grid"></div>
+        </div>
+
+        <!-- CATEGORIES VIEW -->
+        <div id="categories-view" class="view-panel">
+          <div class="section-title-row">
+            <h2 class="section-title"><i class="fa-solid fa-border-all"></i> Browse by Category</h2>
+          </div>
+          <div id="all-categories-container"></div>
+        </div>
+
+        <!-- SETTINGS PAGE -->
+        <div id="settings-view" class="view-panel">
+          <div class="settings-container glass-panel">
+            <h2 class="settings-title"><i class="fa-solid fa-sliders"></i> Launcher Settings</h2>
             
-            <div class="overlay-bottom-bar">
-              <div class="stream-info">
-                <h2 id="current-stream-title" class="stream-title">Big Buck Bunny HLS Stream</h2>
-                <p id="current-stream-sub" class="stream-sub">Multi-Bitrate HLS Test Feed • Stereo AAC Audio • Direct Web Relay</p>
-              </div>
-              <div class="overlay-actions">
-                <button class="btn-secondary focusable" id="btn-add-favorite">
-                  <i class="fa-regular fa-star"></i> <span>FAVORITE</span>
-                </button>
-                <button class="btn-primary focusable" id="btn-cinema-mode">
-                  <i class="fa-solid fa-tv"></i> <span>TV MODE</span>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Loading Indicator -->
-          <div class="player-loader hidden" id="player-loader">
-            <div class="spinner"></div>
-            <span>Buffering Stream...</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- CONTENT GRID & TABS -->
-      <section class="content-section">
-        <div class="tabs-header">
-          <div class="tabs-list">
-            <button class="tab-btn active focusable" data-tab="channels"><i class="fa-solid fa-list"></i> Channels</button>
-            <button class="tab-btn focusable" data-tab="favorites"><i class="fa-solid fa-star"></i> Favorites</button>
-            <button class="tab-btn focusable" data-tab="playlists"><i class="fa-solid fa-folder-open"></i> Playlists</button>
-            <button class="tab-btn focusable" data-tab="history"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
-          </div>
-          
-          <!-- Category Filter Pills -->
-          <div class="category-pills" id="category-filters">
-            <button class="pill-btn active focusable" data-category="all">All</button>
-            <button class="pill-btn focusable" data-category="news">News</button>
-            <button class="pill-btn focusable" data-category="sports">Sports</button>
-            <button class="pill-btn focusable" data-category="movies">Movies</button>
-            <button class="pill-btn focusable" data-category="music">Music</button>
-          </div>
-        </div>
-
-        <!-- TAB PANELS -->
-        <div class="tab-panels">
-          
-          <!-- Channels Grid Panel -->
-          <div class="tab-panel active" id="panel-channels">
-            <div class="channels-grid" id="channels-grid">
-              <!-- Rendered via JS -->
-            </div>
-          </div>
-
-          <!-- Favorites Grid Panel -->
-          <div class="tab-panel" id="panel-favorites">
-            <div class="channels-grid" id="favorites-grid">
-              <!-- Rendered via JS -->
-            </div>
-          </div>
-
-          <!-- Playlists Panel -->
-          <div class="tab-panel" id="panel-playlists">
-            <div class="playlists-container">
-              <div class="playlist-card glass-card focusable">
-                <div class="playlist-icon"><i class="fa-solid fa-file-code"></i></div>
-                <div class="playlist-details">
-                  <h3>Master IPTV M3U8 Playlist</h3>
-                  <p>240 Channels • Auto-sync active</p>
+            <div class="settings-group">
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h3>TV Focus Mode</h3>
+                  <p>Optimize UI scale, remote controls, and disable vertical scrolling for 1080p TV screens.</p>
                 </div>
-                <button class="btn-secondary focusable btn-import-playlist"><i class="fa-solid fa-file-import"></i> Import</button>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-tv-mode" checked>
+                  <span class="slider round"></span>
+                </label>
               </div>
 
-              <div class="playlist-card glass-card focusable">
-                <div class="playlist-icon"><i class="fa-solid fa-globe"></i></div>
-                <div class="playlist-details">
-                  <h3>Global News & Sports Hub</h3>
-                  <p>15 Curated HLS Streams</p>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h3>Dark Obsidian Theme</h3>
+                  <p>Use deep high-contrast OLED dark background (#0B1020).</p>
                 </div>
-                <button class="btn-secondary focusable btn-import-playlist"><i class="fa-solid fa-cloud-arrow-down"></i> Sync</button>
+                <label class="switch">
+                  <input type="checkbox" id="toggle-dark-mode" checked>
+                  <span class="slider round"></span>
+                </label>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h3>Grid Card Columns</h3>
+                  <p>Adjust density of OTT movie poster cards on screen.</p>
+                </div>
+                <select id="grid-size-select" class="custom-select focusable">
+                  <option value="auto">Auto Responsive (Recommended)</option>
+                  <option value="5">5 Columns (TV Fit)</option>
+                  <option value="4">4 Columns</option>
+                  <option value="3">3 Columns</option>
+                </select>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h3>Data & Privacy</h3>
+                  <p>Reset local storage presets, history, and channel favorites.</p>
+                </div>
+                <div class="setting-actions">
+                  <button id="btn-reset-data" class="btn-danger focusable"><i class="fa-solid fa-rotate"></i> Reset All Data</button>
+                </div>
               </div>
             </div>
           </div>
-
-          <!-- History Panel -->
-          <div class="tab-panel" id="panel-history">
-            <div class="history-header">
-              <h3>Recently Streamed</h3>
-              <button class="btn-text-danger focusable" id="btn-clear-history"><i class="fa-solid fa-trash"></i> Clear History</button>
-            </div>
-            <div class="channels-grid" id="history-grid">
-              <!-- Rendered via JS -->
-            </div>
-          </div>
-
         </div>
-      </section>
-    </main>
 
-    <!-- FOOTER STATUS BAR -->
-    <footer class="footer-bar">
-      <div class="footer-left">
-        <span class="status-indicator online" id="status-indicator"><i class="fa-solid fa-wifi"></i> ONLINE</span>
-        <span class="device-tag" id="device-tag"><i class="fa-solid fa-laptop"></i> Desktop View</span>
-      </div>
-      <div class="footer-center">
-        <span class="footer-text">D-Pad / Arrow Key Focus Enabled • Press 'F' for Fullscreen</span>
-      </div>
-      <div class="footer-right">
-        <span class="footer-version">NiK-TV Web v2.0</span>
-      </div>
-    </footer>
+        <!-- EMPTY STATE COMPONENT -->
+        <div id="empty-state" class="state-container hidden">
+          <div class="state-illustration">
+            <i class="fa-solid fa-tv-slash"></i>
+          </div>
+          <h2 class="state-title">No Websites Found</h2>
+          <p class="state-subtitle">No cards match your search criteria. Add custom website URLs to start browsing.</p>
+          <button class="btn-primary focusable" id="btn-empty-add"><i class="fa-solid fa-plus"></i> Add Website URL</button>
+        </div>
 
-    <!-- VOICE SEARCH MODAL -->
-    <div class="modal hidden" id="voice-modal">
-      <div class="modal-backdrop"></div>
-      <div class="modal-content glass-card">
-        <button class="modal-close focusable" id="btn-close-voice"><i class="fa-solid fa-xmark"></i></button>
-        <div class="voice-wave-container">
-          <div class="mic-icon-circle"><i class="fa-solid fa-microphone"></i></div>
-          <div class="sound-wave">
-            <span></span><span></span><span></span><span></span><span></span>
+        <!-- SKELETON LOADING STATE COMPONENT -->
+        <div id="loading-skeleton" class="state-container hidden">
+          <div class="skeleton-grid">
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
+            <div class="skeleton-card shimmer"></div>
           </div>
         </div>
-        <h3 id="voice-status">Listening for channel or URL...</h3>
-        <p class="voice-hint">Try saying: "Play Sports", "Open News", or "Big Buck Bunny"</p>
-      </div>
+
+        <!-- NO INTERNET STATE COMPONENT -->
+        <div id="offline-state" class="state-container hidden">
+          <div class="state-illustration danger-glow">
+            <i class="fa-solid fa-wifi-slash"></i>
+          </div>
+          <h2 class="state-title">No Internet Connection</h2>
+          <p class="state-subtitle">Please check your network router or connection to launch online portals.</p>
+          <div class="state-actions">
+            <button class="btn-primary focusable" id="btn-retry-network"><i class="fa-solid fa-rotate-right"></i> Retry Connection</button>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- ELEGANT BOTTOM STATUS BAR -->
+      <footer class="status-footer">
+        <div class="footer-left">
+          <span class="status-pill online" id="net-status"><i class="fa-solid fa-circle"></i> ONLINE</span>
+          <span class="footer-stat"><i class="fa-solid fa-globe"></i> Total Websites: <strong id="total-sites-count">12</strong></span>
+        </div>
+        <div class="footer-center">
+          <span class="footer-tip"><i class="fa-solid fa-keyboard"></i> Use D-Pad / Arrow keys to navigate • Click card to open website</span>
+        </div>
+        <div class="footer-right">
+          <span class="footer-category" id="current-cat-display"><i class="fa-solid fa-layer-group"></i> All Categories</span>
+          <span class="clock-display" id="clock-display">00:00 PM</span>
+        </div>
+      </footer>
+
     </div>
+  </div>
 
+  <!-- CONTEXT MENU MODAL (TV LONG PRESS / RIGHT CLICK) -->
+  <div id="context-menu" class="context-menu hidden">
+    <div class="menu-header">
+      <img id="ctx-logo" src="" alt="">
+      <span id="ctx-name">Website Name</span>
+    </div>
+    <div class="menu-options">
+      <button class="ctx-item focusable" id="ctx-open"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open Website</button>
+      <button class="ctx-item focusable" id="ctx-favorite"><i class="fa-solid fa-star"></i> Toggle Favorite</button>
+      <button class="ctx-item focusable" id="ctx-pin"><i class="fa-solid fa-thumbtack"></i> Pin to Top</button>
+      <button class="ctx-item focusable" id="ctx-copy"><i class="fa-solid fa-copy"></i> Copy Link</button>
+      <button class="ctx-item focusable" id="ctx-info"><i class="fa-solid fa-circle-info"></i> Website Details</button>
+    </div>
+  </div>
+
+  <!-- ADD WEBSITE MODAL -->
+  <div id="add-modal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-card glass-panel">
+      <button class="modal-close focusable" id="btn-close-add"><i class="fa-solid fa-xmark"></i></button>
+      <h2><i class="fa-solid fa-globe text-primary"></i> Add New Website Portal</h2>
+      <form id="add-website-form">
+        <div class="input-group">
+          <label>Website Name</label>
+          <input type="text" id="add-title" class="form-input focusable" placeholder="e.g. Netflix, YouTube, Twitch" required>
+        </div>
+        <div class="input-group">
+          <label>Website Target URL</label>
+          <input type="url" id="add-url" class="form-input focusable" placeholder="https://www.example.com" required>
+        </div>
+        <div class="input-group">
+          <label>Poster Thumbnail Image URL</label>
+          <input type="url" id="add-thumb" class="form-input focusable" placeholder="https://image-url.jpg (Optional)">
+        </div>
+        <div class="input-group">
+          <label>Category</label>
+          <select id="add-category" class="form-input custom-select focusable">
+            <option value="Movies">Movies</option>
+            <option value="Live TV">Live TV</option>
+            <option value="Sports">Sports</option>
+            <option value="News">News</option>
+            <option value="Kids">Kids</option>
+            <option value="Music">Music</option>
+            <option value="Education">Education</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Technology">Technology</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary focusable"><i class="fa-solid fa-check"></i> Add Card</button>
+        </div>
+      </form>
+    </div>
   </div>
 
   <script src="app.js"></script>

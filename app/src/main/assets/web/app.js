@@ -1,332 +1,450 @@
 /* ==========================================================================
-   NiK-TV Universal Web Application Engine (HLS, D-Pad, Tabs, Storage)
+   Nik-TV Premium OTT Web Launcher Engine (URLs, D-Pad Remote, Search, Storage)
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
-  
-  // --- STATE MANAGEMENT ---
-  const state = {
-    activeUrl: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-    currentTitle: 'Big Buck Bunny HLS Stream',
-    currentCategory: 'all',
-    activeTab: 'channels',
-    hls: null,
-    isTvMode: false,
-    favorites: JSON.parse(localStorage.getItem('niktv_favorites') || '[]'),
-    history: JSON.parse(localStorage.getItem('niktv_history') || '[]')
-  };
 
-  // --- DEMO CHANNELS DATA ---
-  const channels = [
+  // --- DEFAULT WEBSITES DATABASE (OTT POSTER CARDS) ---
+  const defaultWebsites = [
     {
-      id: 'c1',
-      title: 'Big Buck Bunny (HLS Direct)',
-      category: 'movies',
-      tag: '1080p60',
-      url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-      thumb: 'https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=600&auto=format&fit=crop'
+      id: 'w1',
+      name: 'Netflix',
+      url: 'https://www.netflix.com',
+      category: 'Movies',
+      isLive: false,
+      isFavorite: true,
+      logo: 'https://cdn.iconscout.com/icon/free/png-256/free-netflix-logo-icon-download-in-svg-png-gif-file-formats--brand-social-media-pack-logos-icons-2673960.png?f=webp&w=256',
+      poster: 'https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=800&auto=format&fit=crop',
+      desc: 'Watch Movies, TV Shows, and Originals online.'
     },
     {
-      id: 'c2',
-      title: 'Tears of Steel (4K Cinema Stream)',
-      category: 'movies',
-      tag: '4K HLS',
-      url: 'https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8',
-      thumb: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?q=80&w=600&auto=format&fit=crop'
+      id: 'w2',
+      name: 'YouTube',
+      url: 'https://www.youtube.com',
+      category: 'Live TV',
+      isLive: true,
+      isFavorite: true,
+      logo: 'https://cdn.iconscout.com/icon/free/png-256/free-youtube-logo-icon-download-in-svg-png-gif-file-formats--social-media-video-brand-pack-logos-icons-2673775.png?f=webp&w=256',
+      poster: 'https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=800&auto=format&fit=crop',
+      desc: 'Enjoy live streams, music videos, and trending content.'
     },
     {
-      id: 'c3',
-      title: 'Sintel Open Movie Relayed Stream',
-      category: 'movies',
-      tag: 'HD STREAM',
-      url: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8',
-      thumb: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=600&auto=format&fit=crop'
+      id: 'w3',
+      name: 'JioCinema / JioTV',
+      url: 'https://www.jiocinema.com',
+      category: 'Sports',
+      isLive: true,
+      isFavorite: true,
+      logo: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=200&auto=format&fit=crop',
+      poster: 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=800&auto=format&fit=crop',
+      desc: 'Live Cricket, IPL, FIFA, Movies & TV Serials.'
     },
     {
-      id: 'c4',
-      title: 'Global News Network Live',
-      category: 'news',
-      tag: 'LIVE NEWS',
-      url: 'https://cdn.jwplayer.com/manifests/pXvldhi2.m3u8',
-      thumb: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=600&auto=format&fit=crop'
+      id: 'w4',
+      name: 'Disney+ Hotstar',
+      url: 'https://www.hotstar.com',
+      category: 'Movies',
+      isLive: false,
+      isFavorite: true,
+      logo: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=200&auto=format&fit=crop',
+      poster: 'https://images.unsplash.com/photo-1536440136628-849c177e76a1?q=80&w=800&auto=format&fit=crop',
+      desc: 'Blockbuster Movies, Marvel, Star Wars & Live Cricket.'
     },
     {
-      id: 'c5',
-      title: 'Extreme Action Sports Feed',
-      category: 'sports',
-      tag: '60 FPS',
-      url: 'https://playertest.longtailvideo.com/adaptive/oceans/oceans.m3u8',
-      thumb: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=600&auto=format&fit=crop'
+      id: 'w5',
+      name: 'Twitch TV',
+      url: 'https://www.twitch.tv',
+      category: 'Sports',
+      isLive: true,
+      isFavorite: false,
+      logo: 'https://cdn.iconscout.com/icon/free/png-256/free-twitch-logo-icon-download-in-svg-png-gif-file-formats--social-media-stream-gaming-brand-pack-logos-icons-2673756.png?f=webp&w=256',
+      poster: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=800&auto=format&fit=crop',
+      desc: 'Live Esports tournaments and gaming broadcasts.'
     },
     {
-      id: 'c6',
-      title: 'Chill Lofi Beats & Cyber Visuals',
-      category: 'music',
-      tag: '24/7 AUDIO',
-      url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8',
-      thumb: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=600&auto=format&fit=crop'
+      id: 'w6',
+      name: 'BBC News',
+      url: 'https://www.bbc.com/news',
+      category: 'News',
+      isLive: true,
+      isFavorite: false,
+      logo: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=200&auto=format&fit=crop',
+      poster: 'https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=800&auto=format&fit=crop',
+      desc: '24/7 Global breaking news and video reports.'
+    },
+    {
+      id: 'w7',
+      name: 'Spotify Web',
+      url: 'https://open.spotify.com',
+      category: 'Music',
+      isLive: false,
+      isFavorite: false,
+      logo: 'https://cdn.iconscout.com/icon/free/png-256/free-spotify-logo-icon-download-in-svg-png-gif-file-formats--social-media-music-brand-pack-logos-icons-2673771.png?f=webp&w=256',
+      poster: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop',
+      desc: 'Millions of songs and podcasts.'
+    },
+    {
+      id: 'w8',
+      name: 'TED Talks',
+      url: 'https://www.ted.com',
+      category: 'Education',
+      isLive: false,
+      isFavorite: false,
+      logo: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=200&auto=format&fit=crop',
+      poster: 'https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=800&auto=format&fit=crop',
+      desc: 'Ideas worth spreading from global visionaries.'
+    },
+    {
+      id: 'w9',
+      name: 'Amazon Shopping',
+      url: 'https://www.amazon.com',
+      category: 'Shopping',
+      isLive: false,
+      isFavorite: false,
+      logo: 'https://cdn.iconscout.com/icon/free/png-256/free-amazon-logo-icon-download-in-svg-png-gif-file-formats--social-media-brand-pack-logos-icons-2673752.png?f=webp&w=256',
+      poster: 'https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?q=80&w=800&auto=format&fit=crop',
+      desc: 'Online shopping for electronics, fashion & products.'
+    },
+    {
+      id: 'w10',
+      name: 'TechCrunch',
+      url: 'https://techcrunch.com',
+      category: 'Technology',
+      isLive: false,
+      isFavorite: false,
+      logo: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=200&auto=format&fit=crop',
+      poster: 'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop',
+      desc: 'Latest technology, startup & gadget reviews.'
     }
   ];
 
+  // --- STATE ---
+  let websites = JSON.parse(localStorage.getItem('niktv_websites') || JSON.stringify(defaultWebsites));
+  let recentHistory = JSON.parse(localStorage.getItem('niktv_recent') || '[]');
+  let activeCategory = 'All';
+  let searchQuery = '';
+
   // --- DOM ELEMENTS ---
-  const videoPlayer = document.getElementById('video-player');
-  const iframePlayer = document.getElementById('iframe-player');
-  const urlInput = document.getElementById('stream-url-input');
-  const btnLoad = document.getElementById('btn-load-stream');
-  const btnFullscreen = document.getElementById('btn-toggle-fullscreen');
-  const btnVoice = document.getElementById('btn-voice-search');
-  const btnAddFav = document.getElementById('btn-add-favorite');
-  const btnCinema = document.getElementById('btn-cinema-mode');
-  const channelsGrid = document.getElementById('channels-grid');
-  const favoritesGrid = document.getElementById('favorites-grid');
-  const historyGrid = document.getElementById('history-grid');
-  const playerLoader = document.getElementById('player-loader');
-  const streamTitle = document.getElementById('current-stream-title');
-  const voiceModal = document.getElementById('voice-modal');
-  const btnCloseVoice = document.getElementById('btn-close-voice');
-  const deviceTag = document.getElementById('device-tag');
+  const splashScreen = document.getElementById('splash-screen');
+  const sideMenu = document.getElementById('side-menu');
+  const btnToggleMenu = document.getElementById('btn-toggle-menu');
+  const searchInput = document.getElementById('search-input');
+  const btnClearSearch = document.getElementById('btn-clear-search');
+  const categoryChips = document.getElementById('category-chips');
+  const heroCarousel = document.getElementById('hero-carousel');
+  const ottSectionsContainer = document.getElementById('ott-sections-container');
+  const emptyState = document.getElementById('empty-state');
+  const contextMenu = document.getElementById('context-menu');
+  const totalSitesCount = document.getElementById('total-sites-count');
+  const currentCatDisplay = document.getElementById('current-cat-display');
+  const clockDisplay = document.getElementById('clock-display');
+  const netStatus = document.getElementById('net-status');
+  const offlineState = document.getElementById('offline-state');
 
-  // --- DEVICE DETECTOR ---
-  function detectDeviceType() {
-    const ua = navigator.userAgent.toLowerCase();
-    const width = window.innerWidth;
+  // --- INITIALIZE SPLASH SCREEN ---
+  setTimeout(() => {
+    splashScreen.style.opacity = '0';
+    setTimeout(() => splashScreen.classList.add('hidden'), 500);
+  }, 1200);
 
-    if (ua.includes('tv') || ua.includes('leanback') || ua.includes('smarttv') || width >= 1920) {
-      deviceTag.innerHTML = '<i class="fa-solid fa-tv"></i> Smart TV / Large Screen';
-      state.isTvMode = true;
-    } else if (ua.includes('ipad') || (width >= 768 && width <= 1024)) {
-      deviceTag.innerHTML = '<i class="fa-solid fa-tablet-screen-button"></i> iPad / Tablet View';
-    } else if (width < 768) {
-      deviceTag.innerHTML = '<i class="fa-solid fa-mobile-screen-button"></i> Mobile View';
+  // --- CLOCK & NETWORK STATUS ---
+  function updateClock() {
+    const now = new Date();
+    clockDisplay.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  function updateNetworkStatus() {
+    if (navigator.onLine) {
+      netStatus.className = 'status-pill online';
+      netStatus.innerHTML = '<i class="fa-solid fa-circle"></i> ONLINE';
+      offlineState.classList.add('hidden');
     } else {
-      deviceTag.innerHTML = '<i class="fa-solid fa-laptop"></i> Desktop / Laptop View';
+      netStatus.className = 'status-pill danger-glow';
+      netStatus.innerHTML = '<i class="fa-solid fa-circle"></i> OFFLINE';
+      offlineState.classList.remove('hidden');
     }
   }
+  window.addEventListener('online', updateNetworkStatus);
+  window.addEventListener('offline', updateNetworkStatus);
+  updateNetworkStatus();
 
-  // --- STREAM PLAYER ENGINE ---
-  function loadStream(url, title = 'Custom Stream') {
-    if (!url) return;
-    
-    state.activeUrl = url;
-    state.currentTitle = title;
-    urlInput.value = url;
-    streamTitle.textContent = title;
-    playerLoader.classList.remove('hidden');
+  // --- SIDE MENU NAVIGATION ---
+  btnToggleMenu.addEventListener('click', () => {
+    sideMenu.classList.toggle('expanded');
+    sideMenu.classList.toggle('collapsed');
+  });
 
-    // Add to history
-    if (!state.history.some(h => h.url === url)) {
-      state.history.unshift({ title, url, timestamp: new Date().toLocaleTimeString() });
-      if (state.history.length > 20) state.history.pop();
-      localStorage.setItem('niktv_history', JSON.stringify(state.history));
-      renderHistory();
-    }
-
-    // Check YouTube or Embed iframe vs HLS
-    if (url.includes('youtube.com') || url.includes('youtu.be')) {
-      videoPlayer.classList.add('hidden');
-      iframePlayer.classList.remove('hidden');
-      let videoId = url.includes('v=') ? url.split('v=')[1].split('&')[0] : url.split('/').pop();
-      iframePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-      playerLoader.classList.add('hidden');
-      return;
-    }
-
-    iframePlayer.classList.add('hidden');
-    videoPlayer.classList.remove('hidden');
-
-    // HLS.js video loading
-    if (Hls.isSupported() && url.endsWith('.m3u8')) {
-      if (state.hls) state.hls.destroy();
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
       
-      const hls = new Hls({ enableWorker: true, lowLatencyMode: true });
-      state.hls = hls;
-      hls.loadSource(url);
-      hls.attachMedia(videoPlayer);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => {
-        videoPlayer.play().catch(() => {});
-        playerLoader.classList.add('hidden');
-      });
-      hls.on(Hls.Events.ERROR, () => {
-        playerLoader.classList.add('hidden');
-      });
-    } else {
-      videoPlayer.src = url;
-      videoPlayer.play().then(() => {
-        playerLoader.classList.add('hidden');
-      }).catch(() => {
-        playerLoader.classList.add('hidden');
-      });
-    }
+      item.classList.add('active');
+      const targetId = item.dataset.target;
+      document.getElementById(targetId).classList.add('active');
 
-    updateFavoriteButtonState();
-  }
+      if (targetId === 'favorites-view') renderFavoritesGrid();
+      if (targetId === 'recent-view') renderRecentGrid();
+      if (targetId === 'categories-view') renderCategoriesView();
+    });
+  });
 
-  // --- RENDER CHANNELS GRID ---
-  function renderChannels(category = 'all') {
-    channelsGrid.innerHTML = '';
-    const filtered = category === 'all' ? channels : channels.filter(c => c.category === category);
+  // --- RENDER HERO CAROUSEL ("CONTINUE BROWSING") ---
+  function renderHeroCarousel() {
+    heroCarousel.innerHTML = '';
+    const featured = websites.slice(0, 4);
 
-    filtered.forEach(ch => {
-      const isFav = state.favorites.some(f => f.url === ch.url);
+    featured.forEach(site => {
       const card = document.createElement('div');
-      card.className = 'channel-card focusable';
+      card.className = 'hero-card focusable';
       card.tabIndex = 0;
       card.innerHTML = `
-        <div class="card-thumb">
-          <img src="${ch.thumb}" alt="${ch.title}" loading="lazy">
-          <span class="card-tag">${ch.tag}</span>
-          <button class="card-fav-btn ${isFav ? 'active' : ''}" data-url="${ch.url}"><i class="fa-${isFav ? 'solid' : 'regular'} fa-star"></i></button>
-          <div class="card-play-overlay">
-            <div class="play-circle"><i class="fa-solid fa-play"></i></div>
+        <img class="hero-bg" src="${site.poster}" alt="${site.name}">
+        <div class="hero-overlay">
+          <div class="hero-meta">
+            <img class="hero-logo" src="${site.logo}" alt="${site.name}">
+            <span class="hero-name">${site.name}</span>
+          </div>
+          <p class="hero-desc">${site.desc}</p>
+          <div class="hero-actions">
+            <button class="btn-open focusable"><i class="fa-solid fa-play"></i> Open Website</button>
+            <button class="btn-icon-circle focusable btn-fav-toggle" data-id="${site.id}"><i class="fa-${site.isFavorite ? 'solid' : 'regular'} fa-star"></i></button>
           </div>
         </div>
-        <div class="card-info">
-          <div class="card-title">${ch.title}</div>
-          <div class="card-meta"><i class="fa-solid fa-layer-group"></i> ${ch.category.toUpperCase()}</div>
-        </div>
       `;
 
-      card.addEventListener('click', () => loadStream(ch.url, ch.title));
-      card.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') loadStream(ch.url, ch.title);
-      });
-
-      const favBtn = card.querySelector('.card-fav-btn');
+      card.addEventListener('click', () => openWebsite(site));
+      const favBtn = card.querySelector('.btn-fav-toggle');
       favBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        toggleFavorite(ch);
-        renderChannels(category);
-        renderFavorites();
+        toggleFavorite(site.id);
+        renderAll();
       });
 
-      channelsGrid.appendChild(card);
+      heroCarousel.appendChild(card);
     });
   }
 
-  // --- RENDER FAVORITES GRID ---
-  function renderFavorites() {
-    favoritesGrid.innerHTML = '';
-    if (state.favorites.length === 0) {
-      favoritesGrid.innerHTML = '<p class="text-sub" style="grid-column:1/-1; padding:20px; text-align:center;">No favorites bookmarked yet.</p>';
+  // --- RENDER OTT SECTIONS (CATEGORIES AS OTT ROWS) ---
+  function renderOTTSections() {
+    ottSectionsContainer.innerHTML = '';
+    
+    // Filter websites
+    let filtered = websites.filter(site => {
+      const matchesCat = (activeCategory === 'All' || site.category === activeCategory);
+      const matchesSearch = site.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            site.category.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesCat && matchesSearch;
+    });
+
+    totalSitesCount.textContent = filtered.length;
+    currentCatDisplay.innerHTML = `<i class="fa-solid fa-layer-group"></i> ${activeCategory}`;
+
+    if (filtered.length === 0) {
+      emptyState.classList.remove('hidden');
       return;
     }
+    emptyState.classList.add('hidden');
 
-    state.favorites.forEach(fav => {
-      const card = document.createElement('div');
-      card.className = 'channel-card focusable';
-      card.tabIndex = 0;
-      card.innerHTML = `
-        <div class="card-thumb">
-          <img src="${fav.thumb || 'https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=600'}" alt="${fav.title}">
-          <span class="card-tag">FAVORITE</span>
-          <button class="card-fav-btn active"><i class="fa-solid fa-star"></i></button>
+    // Group by categories
+    const categories = activeCategory === 'All' 
+      ? ['Favorites', 'Live TV', 'Movies', 'Sports', 'News', 'Music', 'Education', 'Shopping', 'Technology']
+      : [activeCategory];
+
+    categories.forEach(cat => {
+      let catSites = [];
+      if (cat === 'Favorites') {
+        catSites = filtered.filter(s => s.isFavorite);
+      } else {
+        catSites = filtered.filter(s => s.category === cat);
+      }
+
+      if (catSites.length === 0) return;
+
+      const section = document.createElement('div');
+      section.className = 'ott-section';
+      section.innerHTML = `
+        <div class="section-title-row">
+          <h2 class="section-title"><i class="fa-solid fa-${getCategoryIcon(cat)} text-primary"></i> ${cat}</h2>
+          <span class="section-subtitle">${catSites.length} websites</span>
         </div>
-        <div class="card-info">
-          <div class="card-title">${fav.title}</div>
-        </div>
+        <div class="ott-grid"></div>
       `;
 
-      card.addEventListener('click', () => loadStream(fav.url, fav.title));
-      favoritesGrid.appendChild(card);
+      const grid = section.querySelector('.ott-grid');
+      catSites.forEach(site => {
+        grid.appendChild(createWebsiteCard(site));
+      });
+
+      ottSectionsContainer.appendChild(section);
     });
   }
 
-  // --- RENDER HISTORY GRID ---
-  function renderHistory() {
-    historyGrid.innerHTML = '';
-    if (state.history.length === 0) {
-      historyGrid.innerHTML = '<p class="text-sub" style="grid-column:1/-1; padding:20px; text-align:center;">History is empty.</p>';
-      return;
-    }
-
-    state.history.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'channel-card focusable';
-      card.tabIndex = 0;
-      card.innerHTML = `
-        <div class="card-info" style="padding:16px;">
-          <div class="card-title">${item.title}</div>
-          <div class="card-meta">${item.timestamp} • ${item.url}</div>
+  // --- CREATE WEBSITE MOVIE POSTER CARD ---
+  function createWebsiteCard(site) {
+    const card = document.createElement('div');
+    card.className = 'website-card focusable';
+    card.tabIndex = 0;
+    card.innerHTML = `
+      <div class="card-poster">
+        <img src="${site.poster}" alt="${site.name}" loading="lazy">
+        <div class="card-glass-overlay">
+          <div class="card-top-row">
+            ${site.isLive ? '<span class="live-badge"><i class="fa-solid fa-circle"></i> LIVE</span>' : '<span></span>'}
+            <i class="fa-${site.isFavorite ? 'solid' : 'regular'} fa-star fav-star ${site.isFavorite ? 'active' : ''}" data-id="${site.id}"></i>
+          </div>
+          <div class="card-bottom-row">
+            <img class="site-icon" src="${site.logo}" alt="${site.name}">
+            <div class="site-info">
+              <div class="site-name">${site.name}</div>
+              <div class="site-cat"><span class="online-dot"></span> ${site.category}</div>
+            </div>
+          </div>
         </div>
-      `;
-      card.addEventListener('click', () => loadStream(item.url, item.title));
-      historyGrid.appendChild(card);
+      </div>
+    `;
+
+    // Click -> Navigate directly to website URL
+    card.addEventListener('click', () => openWebsite(site));
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') openWebsite(site);
     });
+
+    // Favorite star click
+    const favStar = card.querySelector('.fav-star');
+    favStar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFavorite(site.id);
+      renderAll();
+    });
+
+    // TV Remote Long Press / Context Menu Trigger
+    card.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      showContextMenu(e.clientX, e.clientY, site);
+    });
+
+    return card;
+  }
+
+  // --- OPEN WEBSITE URL DIRECTLY ---
+  function openWebsite(site) {
+    // Add to recently opened history
+    recentHistory = recentHistory.filter(h => h.id !== site.id);
+    recentHistory.unshift(site);
+    if (recentHistory.length > 10) recentHistory.pop();
+    localStorage.setItem('niktv_recent', JSON.stringify(recentHistory));
+
+    // Open target website URL directly
+    window.location.href = site.url;
   }
 
   // --- FAVORITES TOGGLE ---
-  function toggleFavorite(channel) {
-    const idx = state.favorites.findIndex(f => f.url === channel.url);
-    if (idx >= 0) {
-      state.favorites.splice(idx, 1);
-    } else {
-      state.favorites.push(channel);
-    }
-    localStorage.setItem('niktv_favorites', JSON.stringify(state.favorites));
-    updateFavoriteButtonState();
+  function toggleFavorite(id) {
+    websites = websites.map(w => w.id === id ? { ...w, isFavorite: !w.isFavorite } : w);
+    localStorage.setItem('niktv_websites', JSON.stringify(websites));
   }
 
-  function updateFavoriteButtonState() {
-    const isFav = state.favorites.some(f => f.url === state.activeUrl);
-    btnAddFav.innerHTML = isFav 
-      ? '<i class="fa-solid fa-star" style="color:#FFC107"></i> <span>BOOKMARKED</span>'
-      : '<i class="fa-regular fa-star"></i> <span>FAVORITE</span>';
-  }
-
-  // --- EVENT LISTENERS ---
-  btnLoad.addEventListener('click', () => loadStream(urlInput.value, 'Custom Stream'));
-  
-  urlInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') loadStream(urlInput.value, 'Custom Stream');
-  });
-
-  btnFullscreen.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
-  });
-
-  btnAddFav.addEventListener('click', () => {
-    toggleFavorite({ title: state.currentTitle, url: state.activeUrl, thumb: '' });
-    renderFavorites();
-  });
-
-  btnCinema.addEventListener('click', () => {
-    const playerWrapper = document.getElementById('player-container');
-    playerWrapper.scrollIntoView({ behavior: 'smooth' });
-  });
-
-  // TABS CONTROLLER
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-
-      btn.classList.add('active');
-      const targetTab = btn.dataset.tab;
-      document.getElementById(`panel-${targetTab}`).classList.add('active');
+  // --- CATEGORY FILTERS ---
+  categoryChips.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      categoryChips.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeCategory = chip.dataset.category;
+      renderOTTSections();
     });
   });
 
-  // CATEGORY PILLS CONTROLLER
-  document.querySelectorAll('.pill-btn').forEach(pill => {
-    pill.addEventListener('click', () => {
-      document.querySelectorAll('.pill-btn').forEach(p => p.classList.remove('active'));
-      pill.classList.add('active');
-      renderChannels(pill.dataset.category);
-    });
+  // --- REAL-TIME SEARCH ---
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value;
+    if (searchQuery.length > 0) {
+      btnClearSearch.classList.remove('hidden');
+    } else {
+      btnClearSearch.classList.add('hidden');
+    }
+    renderOTTSections();
   });
 
-  // VOICE MODAL
-  btnVoice.addEventListener('click', () => voiceModal.classList.remove('hidden'));
-  btnCloseVoice.addEventListener('click', () => voiceModal.classList.add('hidden'));
+  btnClearSearch.addEventListener('click', () => {
+    searchInput.value = '';
+    searchQuery = '';
+    btnClearSearch.classList.add('hidden');
+    renderOTTSections();
+  });
 
-  // --- TV D-PAD SPATIAL NAVIGATION KEYBOARD SUPPORT ---
+  // --- CONTEXT MENU ---
+  function showContextMenu(x, y, site) {
+    document.getElementById('ctx-name').textContent = site.name;
+    document.getElementById('ctx-logo').src = site.logo;
+
+    contextMenu.style.left = `${Math.min(x, window.innerWidth - 250)}px`;
+    contextMenu.style.top = `${Math.min(y, window.innerHeight - 250)}px`;
+    contextMenu.classList.remove('hidden');
+
+    document.getElementById('ctx-open').onclick = () => openWebsite(site);
+    document.getElementById('ctx-favorite').onclick = () => {
+      toggleFavorite(site.id);
+      contextMenu.classList.add('hidden');
+      renderAll();
+    };
+    document.getElementById('ctx-copy').onclick = () => {
+      navigator.clipboard.writeText(site.url);
+      alert(`Copied URL: ${site.url}`);
+      contextMenu.classList.add('hidden');
+    };
+  }
+
+  document.addEventListener('click', () => contextMenu.classList.add('hidden'));
+
+  // --- HELPER FUNCTION FOR CATEGORY ICONS ---
+  function getCategoryIcon(cat) {
+    const icons = {
+      'Favorites': 'star',
+      'Movies': 'film',
+      'Live TV': 'tv',
+      'Sports': 'futbol',
+      'News': 'newspaper',
+      'Kids': 'child-reaching',
+      'Music': 'music',
+      'Education': 'graduation-cap',
+      'Shopping': 'cart-shopping',
+      'Technology': 'microchip'
+    };
+    return icons[cat] || 'layer-group';
+  }
+
+  // --- RENDER ALL VIEWS ---
+  function renderFavoritesGrid() {
+    const favGrid = document.getElementById('favorites-grid');
+    favGrid.innerHTML = '';
+    const favs = websites.filter(s => s.isFavorite);
+    favs.forEach(site => favGrid.appendChild(createWebsiteCard(site)));
+  }
+
+  function renderRecentGrid() {
+    const recGrid = document.getElementById('recent-grid');
+    recGrid.innerHTML = '';
+    recentHistory.forEach(site => recGrid.appendChild(createWebsiteCard(site)));
+  }
+
+  function renderCategoriesView() {
+    const container = document.getElementById('all-categories-container');
+    container.innerHTML = '';
+    renderOTTSections();
+  }
+
+  function renderAll() {
+    renderHeroCarousel();
+    renderOTTSections();
+  }
+
+  // --- TV D-PAD REMOTE SPATIAL NAVIGATION ---
   window.addEventListener('keydown', (e) => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-      const focusables = Array.from(document.querySelectorAll('.focusable'));
+      const focusables = Array.from(document.querySelectorAll('.focusable:not(.hidden)'));
       const active = document.activeElement;
       const index = focusables.indexOf(active);
 
@@ -338,20 +456,14 @@ document.addEventListener('DOMContentLoaded', () => {
       let nextIndex = index;
       if (e.key === 'ArrowRight') nextIndex = (index + 1) % focusables.length;
       if (e.key === 'ArrowLeft') nextIndex = (index - 1 + focusables.length) % focusables.length;
-      if (e.key === 'ArrowDown') nextIndex = Math.min(index + 3, focusables.length - 1);
-      if (e.key === 'ArrowUp') nextIndex = Math.max(index - 3, 0);
+      if (e.key === 'ArrowDown') nextIndex = Math.min(index + 5, focusables.length - 1);
+      if (e.key === 'ArrowUp') nextIndex = Math.max(index - 5, 0);
 
       focusables[nextIndex].focus();
-    } else if (e.key.toLowerCase() === 'f') {
-      btnFullscreen.click();
     }
   });
 
-  // --- INITIALIZATION ---
-  detectDeviceType();
-  window.addEventListener('resize', detectDeviceType);
-  renderChannels();
-  renderFavorites();
-  renderHistory();
-  loadStream(state.activeUrl, state.currentTitle);
+  // --- INITIAL RENDER ---
+  document.body.classList.add('tv-mode');
+  renderAll();
 });
