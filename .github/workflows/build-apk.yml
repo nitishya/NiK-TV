@@ -1,10 +1,15 @@
-name: Build and Release Android APK
+name: Build APK & Deploy Web Application
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build:
@@ -38,16 +43,15 @@ jobs:
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/heads/main')
         with:
-          tag_name: v1.0.${{ github.run_number }}
-          name: NiK-TV Release v1.0.${{ github.run_number }}
+          tag_name: v2.0.${{ github.run_number }}
+          name: NiK-TV Universal Web & TV Release v2.0.${{ github.run_number }}
           body: |
-            Automated build of NiK-TV Android & Android TV Application.
+            Automated build of NiK-TV Universal Web & Android TV Application.
             
-            ### Included Features:
-            - Production Native `NiKWebView` Engine with HTML5 video streaming.
-            - Full Android TV D-Pad Remote Navigation.
-            - Runtime Permissions for Audio/Voice Search & Storage.
-            - Compatible with Android 9 (API 28) through Android 14+.
+            ### Features Included:
+            - **Universal Web Interface**: Works seamlessly on TV (D-Pad remote), Laptop, iPad/Tablet, and Mobile screens.
+            - **Live HLS Stream Player**: HLS.js video player with quality switching.
+            - **Embedded Android Native App**: Embedded responsive web asset inside WebView engine.
           files: app/build/outputs/apk/debug/app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

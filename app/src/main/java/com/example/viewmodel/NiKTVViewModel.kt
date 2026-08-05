@@ -23,10 +23,10 @@ class NiKTVViewModel : ViewModel() {
     private val _previousScreen = MutableStateFlow(AppScreen.HOME)
     val previousScreen: StateFlow<AppScreen> = _previousScreen.asStateFlow()
 
-    private val _activeStreamUrl = MutableStateFlow("https://stream.nexus-global.io/dashboard")
+    private val _activeStreamUrl = MutableStateFlow("file:///android_asset/web/index.html")
     val activeStreamUrl: StateFlow<String> = _activeStreamUrl.asStateFlow()
 
-    private val _urlInputText = MutableStateFlow("https://stream.nexus-global.io/dashboard")
+    private val _urlInputText = MutableStateFlow("file:///android_asset/web/index.html")
     val urlInputText: StateFlow<String> = _urlInputText.asStateFlow()
 
     private val _isLoadingStream = MutableStateFlow(false)

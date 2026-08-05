@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>NiK-TV | Universal Stream Hub</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- HLS.js for Live Stream Playback -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-dark">
+  <div id="app" class="app-layout">
+
+    <!-- TOP HEADER / BROWSER NAVBAR -->
+    <header class="navbar" id="navbar">
+      <div class="nav-left">
+        <div class="brand">
+          <i class="fa-solid fa-tv brand-icon"></i>
+          <span class="brand-name">NiK<span class="brand-highlight">-TV</span></span>
+          <span class="badge-tag">UNIVERSAL</span>
+        </div>
+        <div class="nav-controls">
+          <button class="icon-btn focusable" id="btn-back" title="Back (Alt+Left)"><i class="fa-solid fa-arrow-left"></i></button>
+          <button class="icon-btn focusable" id="btn-forward" title="Forward (Alt+Right)"><i class="fa-solid fa-arrow-right"></i></button>
+          <button class="icon-btn focusable" id="btn-refresh" title="Refresh Stream (R)"><i class="fa-solid fa-rotate-right"></i></button>
+        </div>
+      </div>
+
+      <!-- Address & Stream Search Bar -->
+      <div class="address-bar-container">
+        <i class="fa-solid fa-lock text-success lock-icon"></i>
+        <input type="text" id="stream-url-input" class="address-input focusable" placeholder="Enter stream URL (.m3u8, .mp4, YouTube)..." value="https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8" autocomplete="off" spellcheck="false">
+        <button class="btn-primary load-btn focusable" id="btn-load-stream">
+          <i class="fa-solid fa-play"></i> <span class="btn-text">PLAY</span>
+        </button>
+      </div>
+
+      <div class="nav-right">
+        <button class="icon-btn focusable" id="btn-voice-search" title="Voice Search"><i class="fa-solid fa-microphone"></i></button>
+        <button class="icon-btn focusable" id="btn-toggle-fullscreen" title="Toggle Fullscreen (F)"><i class="fa-solid fa-expand"></i></button>
+        <button class="icon-btn focusable" id="btn-settings" title="Settings"><i class="fa-solid fa-gear"></i></button>
+      </div>
+    </header>
+
+    <!-- MAIN WORKSPACE -->
+    <main class="main-content">
+      
+      <!-- HERO PLAYER SECTION -->
+      <section class="hero-player-section">
+        <div class="player-wrapper" id="player-container">
+          
+          <!-- Video Element & Fallback Frame -->
+          <video id="video-player" class="video-element" controls crossorigin playsinline poster="https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=1200&auto=format&fit=crop"></video>
+          <iframe id="iframe-player" class="iframe-element hidden" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+
+          <!-- Overlay Player Controls Bar -->
+          <div class="player-overlay" id="player-overlay">
+            <div class="stream-badge-row">
+              <span class="live-pill"><i class="fa-solid fa-circle pulse-dot"></i> LIVE</span>
+              <span class="stream-quality-tag" id="quality-tag">1080p60</span>
+            </div>
+            
+            <div class="overlay-bottom-bar">
+              <div class="stream-info">
+                <h2 id="current-stream-title" class="stream-title">Big Buck Bunny HLS Stream</h2>
+                <p id="current-stream-sub" class="stream-sub">Multi-Bitrate HLS Test Feed • Stereo AAC Audio • Direct Web Relay</p>
+              </div>
+              <div class="overlay-actions">
+                <button class="btn-secondary focusable" id="btn-add-favorite">
+                  <i class="fa-regular fa-star"></i> <span>FAVORITE</span>
+                </button>
+                <button class="btn-primary focusable" id="btn-cinema-mode">
+                  <i class="fa-solid fa-tv"></i> <span>TV MODE</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Loading Indicator -->
+          <div class="player-loader hidden" id="player-loader">
+            <div class="spinner"></div>
+            <span>Buffering Stream...</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTENT GRID & TABS -->
+      <section class="content-section">
+        <div class="tabs-header">
+          <div class="tabs-list">
+            <button class="tab-btn active focusable" data-tab="channels"><i class="fa-solid fa-list"></i> Channels</button>
+            <button class="tab-btn focusable" data-tab="favorites"><i class="fa-solid fa-star"></i> Favorites</button>
+            <button class="tab-btn focusable" data-tab="playlists"><i class="fa-solid fa-folder-open"></i> Playlists</button>
+            <button class="tab-btn focusable" data-tab="history"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+          </div>
+          
+          <!-- Category Filter Pills -->
+          <div class="category-pills" id="category-filters">
+            <button class="pill-btn active focusable" data-category="all">All</button>
+            <button class="pill-btn focusable" data-category="news">News</button>
+            <button class="pill-btn focusable" data-category="sports">Sports</button>
+            <button class="pill-btn focusable" data-category="movies">Movies</button>
+            <button class="pill-btn focusable" data-category="music">Music</button>
+          </div>
+        </div>
+
+        <!-- TAB PANELS -->
+        <div class="tab-panels">
+          
+          <!-- Channels Grid Panel -->
+          <div class="tab-panel active" id="panel-channels">
+            <div class="channels-grid" id="channels-grid">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Favorites Grid Panel -->
+          <div class="tab-panel" id="panel-favorites">
+            <div class="channels-grid" id="favorites-grid">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Playlists Panel -->
+          <div class="tab-panel" id="panel-playlists">
+            <div class="playlists-container">
+              <div class="playlist-card glass-card focusable">
+                <div class="playlist-icon"><i class="fa-solid fa-file-code"></i></div>
+                <div class="playlist-details">
+                  <h3>Master IPTV M3U8 Playlist</h3>
+                  <p>240 Channels • Auto-sync active</p>
+                </div>
+                <button class="btn-secondary focusable btn-import-playlist"><i class="fa-solid fa-file-import"></i> Import</button>
+              </div>
+
+              <div class="playlist-card glass-card focusable">
+                <div class="playlist-icon"><i class="fa-solid fa-globe"></i></div>
+                <div class="playlist-details">
+                  <h3>Global News & Sports Hub</h3>
+                  <p>15 Curated HLS Streams</p>
+                </div>
+                <button class="btn-secondary focusable btn-import-playlist"><i class="fa-solid fa-cloud-arrow-down"></i> Sync</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- History Panel -->
+          <div class="tab-panel" id="panel-history">
+            <div class="history-header">
+              <h3>Recently Streamed</h3>
+              <button class="btn-text-danger focusable" id="btn-clear-history"><i class="fa-solid fa-trash"></i> Clear History</button>
+            </div>
+            <div class="channels-grid" id="history-grid">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER STATUS BAR -->
+    <footer class="footer-bar">
+      <div class="footer-left">
+        <span class="status-indicator online" id="status-indicator"><i class="fa-solid fa-wifi"></i> ONLINE</span>
+        <span class="device-tag" id="device-tag"><i class="fa-solid fa-laptop"></i> Desktop View</span>
+      </div>
+      <div class="footer-center">
+        <span class="footer-text">D-Pad / Arrow Key Focus Enabled • Press 'F' for Fullscreen</span>
+      </div>
+      <div class="footer-right">
+        <span class="footer-version">NiK-TV Web v2.0</span>
+      </div>
+    </footer>
+
+    <!-- VOICE SEARCH MODAL -->
+    <div class="modal hidden" id="voice-modal">
+      <div class="modal-backdrop"></div>
+      <div class="modal-content glass-card">
+        <button class="modal-close focusable" id="btn-close-voice"><i class="fa-solid fa-xmark"></i></button>
+        <div class="voice-wave-container">
+          <div class="mic-icon-circle"><i class="fa-solid fa-microphone"></i></div>
+          <div class="sound-wave">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <h3 id="voice-status">Listening for channel or URL...</h3>
+        <p class="voice-hint">Try saying: "Play Sports", "Open News", or "Big Buck Bunny"</p>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
