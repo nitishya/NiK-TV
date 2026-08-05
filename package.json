@@ -1,11 +1,9 @@
 {
   "name": "nik-tv",
   "version": "1.0.0",
-  "description": "Premium OTT-style Website Launcher & Portal Hub",
-  "main": "web/index.html",
+  "private": true,
   "scripts": {
-    "start": "serve web",
-    "build": "echo 'No build step required for static project'"
+    "start": "serve web"
   },
   "dependencies": {
     "serve": "^14.2.3"
