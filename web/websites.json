@@ -2,7 +2,7 @@
   {
     "id": "w1",
     "name": "Netflix",
-    "url": "https://www.netflix.com",
+    "url": "https://netmirror.center/",
     "category": "Movies",
     "isLive": false,
     "isFavorite": true,
@@ -12,8 +12,8 @@
   },
   {
     "id": "w2",
-    "name": "YouTube",
-    "url": "https://www.youtube.com",
+    "name": "PFlix",
+    "url": "https://pantyflix.com/",
     "category": "Live TV",
     "isLive": true,
     "isFavorite": true,
@@ -23,8 +23,8 @@
   },
   {
     "id": "w3",
-    "name": "JioCinema",
-    "url": "https://www.jiocinema.com",
+    "name": "OTT Adda",
+    "url": "https://ottadda.space/",
     "category": "Sports",
     "isLive": true,
     "isFavorite": true,
@@ -34,8 +34,8 @@
   },
   {
     "id": "w4",
-    "name": "Disney+ Hotstar",
-    "url": "https://www.hotstar.com",
+    "name": "7reels",
+    "url": "https://7reels.cc/",
     "category": "Movies",
     "isLive": false,
     "isFavorite": true,
@@ -45,8 +45,8 @@
   },
   {
     "id": "w5",
-    "name": "Twitch TV",
-    "url": "https://www.twitch.tv",
+    "name": "Cinegram TV",
+    "url": "https://cinegram.tv/home",
     "category": "Sports",
     "isLive": true,
     "isFavorite": false,
@@ -56,8 +56,8 @@
   },
   {
     "id": "w6",
-    "name": "BBC News",
-    "url": "https://www.bbc.com/news",
+    "name": "VidBox",
+    "url": "https://vidbox.vc/home",
     "category": "News",
     "isLive": true,
     "isFavorite": false,
