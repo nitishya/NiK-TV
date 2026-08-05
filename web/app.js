@@ -9,7 +9,98 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeCategory = 'All';
   let searchQuery = '';
 
-  // Load website data from separate JSON file
+  // --- AVATAR PLACEHOLDER COMPONENT SYSTEM ---
+  function getWebsiteInitial(name, url) {
+    if (name && name.trim().length > 0) {
+      const cleanName = name.trim();
+      return cleanName.charAt(0).toUpperCase();
+    }
+    if (url && url.trim().length > 0) {
+      try {
+        const domain = new URL(url).hostname.replace(/^www\./, '');
+        if (domain.length > 0) {
+          return domain.charAt(0).toUpperCase();
+        }
+      } catch (e) {
+        const cleanUrl = url.replace(/^(https?:\/\/)?(www\.)?/, '');
+        if (cleanUrl.length > 0) return cleanUrl.charAt(0).toUpperCase();
+      }
+    }
+    return '?';
+  }
+
+  function getGradientByName(name) {
+    if (!name) return 'linear-gradient(135deg, #4A5568, #2D3748)';
+    const lower = name.toLowerCase().trim();
+
+    if (lower.includes('netflix')) return 'linear-gradient(135deg, #E50914, #8B0000)';
+    if (lower.includes('hotstar') || lower.includes('disney')) return 'linear-gradient(135deg, #0284C7, #0369A1)';
+    if (lower.includes('sony') || lower.includes('twitch')) return 'linear-gradient(135deg, #9333EA, #6B21A8)';
+    if (lower.includes('espn') || lower.includes('jio') || lower.includes('sports')) return 'linear-gradient(135deg, #16A34A, #15803D)';
+    if (lower.includes('google') || lower.includes('youtube')) return 'linear-gradient(135deg, #DC2626, #EA580C)';
+
+    // Deterministic HSL color generator for all other website names
+    let hash = 0;
+    for (let i = 0; i < lower.length; i++) {
+      hash = lower.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const h1 = Math.abs(hash) % 360;
+    const h2 = (h1 + 40) % 360;
+    return `linear-gradient(135deg, hsl(${h1}, 75%, 45%), hsl(${h2}, 85%, 35%))`;
+  }
+
+  function createAvatarPlaceholder(name, url, isCircle = false, extraClass = '') {
+    const initial = getWebsiteInitial(name, url);
+    const gradient = getGradientByName(name || url);
+    const shapeClass = isCircle ? 'avatar-circle' : 'avatar-square';
+    
+    const container = document.createElement('div');
+    container.className = `avatar-placeholder-container ${shapeClass} ${extraClass}`;
+    container.style.background = gradient;
+    
+    const text = document.createElement('span');
+    text.className = 'avatar-placeholder-text';
+    text.textContent = initial;
+    container.appendChild(text);
+
+    return container;
+  }
+
+  function attachSafeImageLoading(imgElement, containerElement, name, url, isCircle = false) {
+    if (!imgElement || !imgElement.getAttribute('src')) {
+      const placeholder = createAvatarPlaceholder(name, url, isCircle);
+      if (imgElement && imgElement.parentNode) {
+        imgElement.parentNode.replaceChild(placeholder, imgElement);
+      } else if (containerElement) {
+        containerElement.appendChild(placeholder);
+      }
+      return;
+    }
+
+    const placeholder = createAvatarPlaceholder(name, url, isCircle);
+    placeholder.classList.add('avatar-loading-placeholder');
+
+    if (imgElement.parentNode) {
+      imgElement.parentNode.insertBefore(placeholder, imgElement);
+    }
+
+    imgElement.classList.add('img-hidden');
+
+    imgElement.onload = () => {
+      imgElement.classList.remove('img-hidden');
+      imgElement.classList.add('img-loaded');
+      if (placeholder && placeholder.parentNode) {
+        placeholder.style.opacity = '0';
+        setTimeout(() => placeholder.remove(), 300);
+      }
+    };
+
+    imgElement.onerror = () => {
+      imgElement.remove();
+      placeholder.classList.remove('avatar-loading-placeholder');
+      placeholder.style.opacity = '1';
+    };
+  }
   async function loadWebsitesConfig() {
     try {
       const res = await fetch('websites.json');
@@ -104,19 +195,25 @@ document.addEventListener('DOMContentLoaded', () => {
       card.className = 'hero-card focusable';
       card.tabIndex = 0;
       card.innerHTML = `
-        <img class="hero-bg" src="${site.poster}" alt="${site.name}">
+        <img class="hero-bg" src="${site.poster || ''}" alt="${site.name || ''}">
         <div class="hero-overlay">
           <div class="hero-meta">
-            <img class="hero-logo" src="${site.logo}" alt="${site.name}">
-            <span class="hero-name">${site.name}</span>
+            <img class="hero-logo" src="${site.logo || ''}" alt="${site.name || ''}">
+            <span class="hero-name">${site.name || 'Website'}</span>
           </div>
-          <p class="hero-desc">${site.desc}</p>
+          <p class="hero-desc">${site.desc || ''}</p>
           <div class="hero-actions">
             <button class="btn-open focusable"><i class="fa-solid fa-play"></i> Open Website</button>
             <button class="btn-icon-circle focusable btn-fav-toggle" data-id="${site.id}"><i class="fa-${site.isFavorite ? 'solid' : 'regular'} fa-star"></i></button>
           </div>
         </div>
       `;
+
+      const heroBg = card.querySelector('.hero-bg');
+      attachSafeImageLoading(heroBg, card, site.name, site.url, false);
+
+      const heroLogo = card.querySelector('.hero-logo');
+      attachSafeImageLoading(heroLogo, card.querySelector('.hero-meta'), site.name, site.url, true);
 
       card.addEventListener('click', () => openWebsite(site));
       const favBtn = card.querySelector('.btn-fav-toggle');
@@ -137,8 +234,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // Filter websites
     let filtered = websites.filter(site => {
       const matchesCat = (activeCategory === 'All' || site.category === activeCategory);
-      const matchesSearch = site.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            site.category.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = (site.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
+                            (site.category || '').toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCat && matchesSearch;
     });
 
@@ -192,22 +289,28 @@ document.addEventListener('DOMContentLoaded', () => {
     card.tabIndex = 0;
     card.innerHTML = `
       <div class="card-poster">
-        <img src="${site.poster}" alt="${site.name}" loading="lazy">
+        <img class="card-poster-img" src="${site.poster || ''}" alt="${site.name || ''}" loading="lazy">
         <div class="card-glass-overlay">
           <div class="card-top-row">
             ${site.isLive ? '<span class="live-badge"><i class="fa-solid fa-circle"></i> LIVE</span>' : '<span></span>'}
             <i class="fa-${site.isFavorite ? 'solid' : 'regular'} fa-star fav-star ${site.isFavorite ? 'active' : ''}" data-id="${site.id}"></i>
           </div>
           <div class="card-bottom-row">
-            <img class="site-icon" src="${site.logo}" alt="${site.name}">
+            <img class="site-icon" src="${site.logo || ''}" alt="${site.name || ''}">
             <div class="site-info">
-              <div class="site-name">${site.name}</div>
-              <div class="site-cat"><span class="online-dot"></span> ${site.category}</div>
+              <div class="site-name">${site.name || 'Website'}</div>
+              <div class="site-cat"><span class="online-dot"></span> ${site.category || 'Portal'}</div>
             </div>
           </div>
         </div>
       </div>
     `;
+
+    const posterImg = card.querySelector('.card-poster-img');
+    attachSafeImageLoading(posterImg, card.querySelector('.card-poster'), site.name, site.url, false);
+
+    const logoImg = card.querySelector('.site-icon');
+    attachSafeImageLoading(logoImg, card.querySelector('.card-bottom-row'), site.name, site.url, true);
 
     // Click -> Navigate directly to website URL
     card.addEventListener('click', () => openWebsite(site));
@@ -280,8 +383,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- CONTEXT MENU ---
   function showContextMenu(x, y, site) {
-    document.getElementById('ctx-name').textContent = site.name;
-    document.getElementById('ctx-logo').src = site.logo;
+    document.getElementById('ctx-name').textContent = site.name || 'Website';
+    const ctxLogo = document.getElementById('ctx-logo');
+    ctxLogo.src = site.logo || '';
+    attachSafeImageLoading(ctxLogo, ctxLogo.parentNode, site.name, site.url, true);
 
     contextMenu.style.left = `${Math.min(x, window.innerWidth - 250)}px`;
     contextMenu.style.top = `${Math.min(y, window.innerHeight - 250)}px`;
