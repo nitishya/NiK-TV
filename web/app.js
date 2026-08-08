@@ -101,17 +101,64 @@ document.addEventListener('DOMContentLoaded', () => {
       placeholder.style.opacity = '1';
     };
   }
+  // --- THEME SYSTEM ENGINE ---
+  let currentTheme = localStorage.getItem('nik-tv-theme') || 'light';
+  
+  function applyTheme(theme) {
+    if (theme === 'system') {
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', systemDark ? 'dark' : 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+    currentTheme = theme;
+    localStorage.setItem('nik-tv-theme', theme);
+    
+    // Update theme toggle icons and selection menus
+    const themeBtn = document.getElementById('btn-theme-toggle');
+    if (themeBtn) {
+      const activeIsDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      themeBtn.innerHTML = activeIsDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+      themeBtn.title = activeIsDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+    }
+    const appearanceSelect = document.getElementById('appearance-select');
+    if (appearanceSelect) {
+      appearanceSelect.value = theme;
+    }
+  }
+
+  // Monitor system OS changes if 'system' selected
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+    if (currentTheme === 'system') {
+      applyTheme('system');
+    }
+  });
+
+  // Apply default or stored theme immediately on startup
+  applyTheme(currentTheme);
+
+  // --- LOCAL STORAGE WEBSITES INITIALIZATION ---
   async function loadWebsitesConfig() {
     try {
-      const res = await fetch('websites.json');
-      if (res.ok) {
-        const data = await res.json();
-        const savedFavs = JSON.parse(localStorage.getItem('niktv_fav_ids') || '[]');
-        websites = data.map(item => ({
-          ...item,
-          isFavorite: savedFavs.includes(item.id) || item.isFavorite
-        }));
+      const storedWebsites = localStorage.getItem('nik-tv-websites');
+      const savedFavs = JSON.parse(localStorage.getItem('niktv_fav_ids') || '[]');
+      
+      if (storedWebsites) {
+        websites = JSON.parse(storedWebsites);
+      } else {
+        const res = await fetch('websites.json');
+        if (res.ok) {
+          const data = await res.json();
+          websites = data;
+          localStorage.setItem('nik-tv-websites', JSON.stringify(websites));
+        }
       }
+      
+      // Update favorites map properties
+      websites = websites.map(item => ({
+        ...item,
+        isFavorite: savedFavs.includes(item.id) || item.isFavorite
+      }));
     } catch (e) {
       console.warn("Using fallback local data", e);
     }
@@ -134,6 +181,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const clockDisplay = document.getElementById('clock-display');
   const netStatus = document.getElementById('net-status');
   const offlineState = document.getElementById('offline-state');
+
+  // Popup Elements
+  const notificationPanel = document.getElementById('notification-panel');
+  const profileMenu = document.getElementById('profile-menu');
+  const addModal = document.getElementById('add-modal');
+  const btnCloseAdd = document.getElementById('btn-close-add');
+  const addWebsiteForm = document.getElementById('add-website-form');
 
   // --- INITIALIZE SPLASH SCREEN ---
   setTimeout(() => {
@@ -172,6 +226,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Helper to switch view panels
   function switchViewPanel(targetId) {
+    // Hide open modals
+    notificationPanel.classList.add('hidden');
+    profileMenu.classList.add('hidden');
+    
     document.querySelectorAll('.nav-item').forEach(i => {
       if (i.dataset.target === targetId) {
         i.classList.add('active');
@@ -255,7 +313,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let filtered = websites.filter(site => {
       const matchesCat = (activeCategory === 'All' || site.category === activeCategory);
       const matchesSearch = (site.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            (site.category || '').toLowerCase().includes(searchQuery.toLowerCase());
+                            (site.category || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            (site.desc || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                            (site.url || '').toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCat && matchesSearch;
     });
 
@@ -469,8 +529,191 @@ document.addEventListener('DOMContentLoaded', () => {
     renderOTTSections();
   }
 
+  // --- HEADER ACTIONS INTERACTIVE INTERFACE ---
+
+  // 1. Theme Toggles
+  const btnThemeToggle = document.getElementById('btn-theme-toggle');
+  if (btnThemeToggle) {
+    btnThemeToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      applyTheme(isDark ? 'light' : 'dark');
+    });
+  }
+
+  const appearanceSelect = document.getElementById('appearance-select');
+  if (appearanceSelect) {
+    appearanceSelect.addEventListener('change', (e) => {
+      applyTheme(e.target.value);
+    });
+  }
+
+  // 2. Add Website Modals
+  const btnAddModal = document.getElementById('btn-add-modal');
+  if (btnAddModal) {
+    btnAddModal.addEventListener('click', (e) => {
+      e.stopPropagation();
+      addModal.classList.remove('hidden');
+    });
+  }
+
+  const btnEmptyAdd = document.getElementById('btn-empty-add');
+  if (btnEmptyAdd) {
+    btnEmptyAdd.addEventListener('click', (e) => {
+      e.stopPropagation();
+      addModal.classList.remove('hidden');
+    });
+  }
+
+  if (btnCloseAdd) {
+    btnCloseAdd.addEventListener('click', () => {
+      addModal.classList.add('hidden');
+    });
+  }
+
+  if (addWebsiteForm) {
+    addWebsiteForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('add-title').value.trim();
+      const url = document.getElementById('add-url').value.trim();
+      const thumb = document.getElementById('add-thumb').value.trim();
+      const desc = document.getElementById('add-desc').value.trim();
+      const category = document.getElementById('add-category').value;
+
+      // Validate URL format
+      try {
+        new URL(url);
+      } catch (err) {
+        alert("Please enter a valid website URL starting with http:// or https://");
+        return;
+      }
+
+      const newSite = {
+        id: 'user_' + Date.now(),
+        name: name,
+        url: url,
+        category: category,
+        isLive: false,
+        isFavorite: false,
+        logo: thumb || '',
+        poster: thumb || '',
+        desc: desc || `Launcher for ${name}`
+      };
+
+      websites.push(newSite);
+      localStorage.setItem('nik-tv-websites', JSON.stringify(websites));
+      
+      addWebsiteForm.reset();
+      addModal.classList.add('hidden');
+      renderAll();
+    });
+  }
+
+  // 3. Notifications & Status Panel
+  const btnNotifications = document.getElementById('btn-notifications');
+  if (btnNotifications) {
+    btnNotifications.addEventListener('click', (e) => {
+      e.stopPropagation();
+      profileMenu.classList.add('hidden');
+      
+      const isHidden = notificationPanel.classList.contains('hidden');
+      if (isHidden) {
+        // Calculate status information
+        document.getElementById('notif-total-sites').textContent = websites.length;
+        document.getElementById('notif-fav-sites').textContent = websites.filter(s => s.isFavorite).length;
+        notificationPanel.classList.remove('hidden');
+      } else {
+        notificationPanel.classList.add('hidden');
+      }
+    });
+  }
+
+  // 4. Brand Home resets
+  const brandLogo = document.querySelector('.brand');
+  if (brandLogo) {
+    brandLogo.addEventListener('click', () => {
+      switchViewPanel('home-view');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // 5. Header favorites shortcut
+  const btnHeaderFav = document.getElementById('btn-header-fav');
+  if (btnHeaderFav) {
+    btnHeaderFav.addEventListener('click', () => {
+      switchViewPanel('favorites-view');
+    });
+  }
+
+  // 6. Header settings page shortcut
+  const btnSettingsPage = document.getElementById('btn-settings-page');
+  if (btnSettingsPage) {
+    btnSettingsPage.addEventListener('click', () => {
+      switchViewPanel('settings-view');
+    });
+  }
+
+  // 7. Profile avatar popups
+  const profileAvatar = document.querySelector('.profile-avatar');
+  if (profileAvatar) {
+    profileAvatar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      notificationPanel.classList.add('hidden');
+      profileMenu.classList.toggle('hidden');
+    });
+  }
+
+  // Profile menu buttons
+  const profHome = document.getElementById('prof-home');
+  if (profHome) {
+    profHome.addEventListener('click', () => {
+      switchViewPanel('home-view');
+    });
+  }
+  const profTheme = document.getElementById('prof-theme');
+  if (profTheme) {
+    profTheme.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      applyTheme(isDark ? 'light' : 'dark');
+      profileMenu.classList.add('hidden');
+    });
+  }
+  const profSettings = document.getElementById('prof-settings');
+  if (profSettings) {
+    profSettings.addEventListener('click', () => {
+      switchViewPanel('settings-view');
+    });
+  }
+
+  // Hide popups on page-wide click
+  document.addEventListener('click', () => {
+    if (notificationPanel) notificationPanel.classList.add('hidden');
+    if (profileMenu) profileMenu.classList.add('hidden');
+  });
+
+  // Settings: Reset all data action
+  const btnResetData = document.getElementById('btn-reset-data');
+  if (btnResetData) {
+    btnResetData.addEventListener('click', () => {
+      if (confirm("Are you sure you want to reset all Launcher presets, custom URLs, and favorite channels?")) {
+        localStorage.removeItem('nik-tv-websites');
+        localStorage.removeItem('niktv_fav_ids');
+        localStorage.removeItem('niktv_recent');
+        localStorage.removeItem('nik-tv-theme');
+        location.reload();
+      }
+    });
+  }
+
   // --- TV D-PAD REMOTE SPATIAL NAVIGATION ---
   window.addEventListener('keydown', (e) => {
+    // Keyboard Theme shortcut
+    if (e.key === 't' || e.key === 'T') {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      applyTheme(isDark ? 'light' : 'dark');
+    }
+    
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
       const focusables = Array.from(document.querySelectorAll('.focusable:not(.hidden)'));
       const active = document.activeElement;

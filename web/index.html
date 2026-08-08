@@ -109,6 +109,7 @@
         </div>
 
         <div class="header-right">
+          <button class="icon-btn focusable" id="btn-theme-toggle" title="Toggle Theme (T)"><i class="fa-solid fa-sun"></i></button>
           <button class="icon-btn focusable" id="btn-add-modal" title="Add Website URL"><i class="fa-solid fa-plus"></i></button>
           <button class="icon-btn focusable" id="btn-notifications" title="Notifications"><i class="fa-solid fa-bell"></i><span class="notif-badge"></span></button>
           <button class="icon-btn focusable" id="btn-header-fav" title="Favorites"><i class="fa-solid fa-star"></i></button>
@@ -204,13 +205,14 @@
 
               <div class="setting-item">
                 <div class="setting-info">
-                  <h3>Dark Obsidian Theme</h3>
-                  <p>Use deep high-contrast OLED dark background (#0B1020).</p>
+                  <h3>Appearance</h3>
+                  <p>Choose how Nik-TV looks across your devices.</p>
                 </div>
-                <label class="switch">
-                  <input type="checkbox" id="toggle-dark-mode" checked>
-                  <span class="slider round"></span>
-                </label>
+                <select id="appearance-select" class="custom-select focusable">
+                  <option value="light">☀ Light (Default)</option>
+                  <option value="dark">🌙 Dark</option>
+                  <option value="system">⚙ System</option>
+                </select>
               </div>
 
               <div class="setting-item">
@@ -360,6 +362,10 @@
           <input type="url" id="add-thumb" class="form-input focusable" placeholder="https://image-url.jpg (Optional)">
         </div>
         <div class="input-group">
+          <label>Description</label>
+          <input type="text" id="add-desc" class="form-input focusable" placeholder="Brief summary of the website content">
+        </div>
+        <div class="input-group">
           <label>Category</label>
           <select id="add-category" class="form-input custom-select focusable">
             <option value="Movies">Movies</option>
@@ -377,6 +383,48 @@
           <button type="submit" class="btn-primary focusable"><i class="fa-solid fa-check"></i> Add Card</button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- NOTIFICATION / STATUS PANEL (dropdown styling overlay) -->
+  <div id="notification-panel" class="notification-panel hidden">
+    <div class="panel-header">
+      <h3><i class="fa-solid fa-circle-info"></i> Launcher Status</h3>
+    </div>
+    <div class="panel-content">
+      <div class="status-item">
+        <span class="label">Total Websites:</span>
+        <span class="value" id="notif-total-sites">0</span>
+      </div>
+      <div class="status-item">
+        <span class="label">Bookmarked Sites:</span>
+        <span class="value" id="notif-fav-sites">0</span>
+      </div>
+      <div class="status-item">
+        <span class="label">System State:</span>
+        <span class="value text-accent"><i class="fa-solid fa-circle-check"></i> Active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROFILE CONTEXT MENU -->
+  <div id="profile-menu" class="profile-menu hidden">
+    <div class="profile-header">
+      <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop" alt="Profile">
+      <div>
+        <div class="profile-title">Guest User</div>
+        <div class="profile-subtitle">General Profile</div>
+      </div>
+    </div>
+    <div class="profile-links">
+      <button class="profile-item focusable" id="prof-home"><i class="fa-solid fa-house"></i> Home Dashboard</button>
+      <button class="profile-item focusable" id="prof-theme"><i class="fa-solid fa-palette"></i> Toggle Theme</button>
+      <button class="profile-item focusable" id="prof-settings"><i class="fa-solid fa-gear"></i> Settings</button>
+      <div class="profile-divider"></div>
+      <div class="profile-info">
+        <strong>Nik-TV Web Launcher</strong><br>
+        Version 1.0.0 (Stable)
+      </div>
     </div>
   </div>
 
