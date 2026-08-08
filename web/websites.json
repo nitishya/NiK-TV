@@ -67,10 +67,10 @@
   },
   {
     "id": "w7",
-    "name": "Spotify Web",
-    "url": "https://open.spotify.com",
-    "category": "Music",
-    "isLive": false,
+    "name": "Supernova",
+    "url": "https://supernova.to/",
+    "category": "Live TV",
+    "isLive": true,
     "isFavorite": false,
     "logo": "https://cdn.iconscout.com/icon/free/png-256/free-spotify-logo-icon-download-in-svg-png-gif-file-formats--social-media-music-brand-pack-logos-icons-2673771.png?f=webp&w=256",
     "poster": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop",
@@ -78,10 +78,10 @@
   },
   {
     "id": "w8",
-    "name": "TED Talks",
-    "url": "https://www.ted.com",
-    "category": "Education",
-    "isLive": false,
+    "name": "Dulo TV",
+    "url": "https://dulo.cx/",
+    "category": "Live TV",
+    "isLive": true,
     "isFavorite": false,
     "logo": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=200&auto=format&fit=crop",
     "poster": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=800&auto=format&fit=crop",
@@ -97,16 +97,5 @@
     "logo": "https://cdn.iconscout.com/icon/free/png-256/free-amazon-logo-icon-download-in-svg-png-gif-file-formats--social-media-brand-pack-logos-icons-2673752.png?f=webp&w=256",
     "poster": "https://images.unsplash.com/photo-1523474253046-8cd2748b5fd2?q=80&w=800&auto=format&fit=crop",
     "desc": "Online shopping for electronics, fashion & products."
-  },
-  {
-    "id": "w10",
-    "name": "TechCrunch",
-    "url": "https://techcrunch.com",
-    "category": "Technology",
-    "isLive": false,
-    "isFavorite": false,
-    "logo": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=200&auto=format&fit=crop",
-    "poster": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=800&auto=format&fit=crop",
-    "desc": "Latest technology, startup & gadget reviews."
   }
 ]
