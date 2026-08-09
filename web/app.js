@@ -168,6 +168,17 @@ document.addEventListener('DOMContentLoaded', () => {
             isFavorite: savedFavs.includes(item.id) || item.isFavorite
           }));
         }
+
+        // Deduplicate websites array by lowercased name and url so only one unique instance exists
+        const uniqueMap = new Map();
+        websites.forEach(item => {
+          const key = ((item.name || '') + '|' + (item.url || '')).toLowerCase().trim();
+          if (!uniqueMap.has(key)) {
+            uniqueMap.set(key, item);
+          }
+        });
+        websites = Array.from(uniqueMap.values());
+
         localStorage.setItem('nik-tv-websites', JSON.stringify(websites));
       } else if (storedWebsites) {
         websites = JSON.parse(storedWebsites);
@@ -341,6 +352,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     emptyState.classList.add('hidden');
 
+    // Track displayed site IDs to prevent duplicate cards across multiple category rows
+    const displayedSiteIds = new Set();
+
     // Group by categories
     const categories = activeCategory === 'All' 
       ? ['Favorites', 'Live TV', 'Movies', 'Sports', 'News', 'Music', 'Education', 'Shopping', 'Technology', 'Games']
@@ -351,10 +365,18 @@ document.addEventListener('DOMContentLoaded', () => {
       if (cat === 'Favorites') {
         catSites = filtered.filter(s => s.isFavorite);
       } else {
-        catSites = filtered.filter(s => s.category === cat);
+        // Exclude sites already rendered in previous category rows (e.g., Favorites) if viewing All
+        if (activeCategory === 'All') {
+          catSites = filtered.filter(s => s.category === cat && !displayedSiteIds.has(s.id));
+        } else {
+          catSites = filtered.filter(s => s.category === cat);
+        }
       }
 
       if (catSites.length === 0) return;
+
+      // Track rendered site IDs
+      catSites.forEach(s => displayedSiteIds.add(s.id));
 
       const section = document.createElement('div');
       section.className = 'ott-section';
@@ -385,8 +407,11 @@ document.addEventListener('DOMContentLoaded', () => {
         <img class="card-poster-img" src="${site.poster || ''}" alt="${site.name || ''}" loading="lazy">
         <div class="card-glass-overlay">
           <div class="card-top-row">
-            ${site.isLive ? '<span class="live-badge"><i class="fa-solid fa-circle"></i> LIVE</span>' : '<span class="ext-badge" title="Opens a third-party website"><i class="fa-solid fa-arrow-up-right-from-square"></i> External</span>'}
-            <i class="fa-${site.isFavorite ? 'solid' : 'regular'} fa-star fav-star ${site.isFavorite ? 'active' : ''}" data-id="${site.id}"></i>
+            <div class="top-brand-badge">${site.name || 'Website'}</div>
+            <div class="top-row-right">
+              ${site.isLive ? '<span class="live-badge"><i class="fa-solid fa-circle"></i> LIVE</span>' : '<span class="ext-badge" title="Opens a third-party website"><i class="fa-solid fa-arrow-up-right-from-square"></i> External</span>'}
+              <i class="fa-${site.isFavorite ? 'solid' : 'regular'} fa-star fav-star ${site.isFavorite ? 'active' : ''}" data-id="${site.id}"></i>
+            </div>
           </div>
           <div class="card-bottom-row">
             <img class="site-icon" src="${site.logo || ''}" alt="${site.name || ''}">
