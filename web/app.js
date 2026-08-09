@@ -143,22 +143,35 @@ document.addEventListener('DOMContentLoaded', () => {
       const storedWebsites = localStorage.getItem('nik-tv-websites');
       const savedFavs = JSON.parse(localStorage.getItem('niktv_fav_ids') || '[]');
       
-      if (storedWebsites) {
-        websites = JSON.parse(storedWebsites);
-      } else {
-        const res = await fetch('websites.json');
-        if (res.ok) {
-          const data = await res.json();
-          websites = data;
-          localStorage.setItem('nik-tv-websites', JSON.stringify(websites));
+      const res = await fetch('websites.json');
+      if (res.ok) {
+        const jsonWebsites = await res.json();
+        if (storedWebsites) {
+          const userWebsites = JSON.parse(storedWebsites);
+          // Combine jsonWebsites and user-added custom websites (ids starting with user_)
+          const userAdded = userWebsites.filter(w => w.id && w.id.startsWith('user_'));
+          
+          // Map stored favorite overrides onto jsonWebsites
+          const favMap = {};
+          userWebsites.forEach(w => { if (w.id) favMap[w.id] = w.isFavorite; });
+          
+          websites = [
+            ...jsonWebsites.map(item => ({
+              ...item,
+              isFavorite: favMap[item.id] !== undefined ? favMap[item.id] : (savedFavs.includes(item.id) || item.isFavorite)
+            })),
+            ...userAdded
+          ];
+        } else {
+          websites = jsonWebsites.map(item => ({
+            ...item,
+            isFavorite: savedFavs.includes(item.id) || item.isFavorite
+          }));
         }
+        localStorage.setItem('nik-tv-websites', JSON.stringify(websites));
+      } else if (storedWebsites) {
+        websites = JSON.parse(storedWebsites);
       }
-      
-      // Update favorites map properties
-      websites = websites.map(item => ({
-        ...item,
-        isFavorite: savedFavs.includes(item.id) || item.isFavorite
-      }));
     } catch (e) {
       console.warn("Using fallback local data", e);
     }
