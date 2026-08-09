@@ -69,12 +69,12 @@
     "id": "w7",
     "name": "Supernova",
     "url": "https://supernova.to/",
-    "category": "Live TV",
-    "isLive": true,
-    "isFavorite": false,
-    "logo": "https://cdn.iconscout.com/icon/free/png-256/free-spotify-logo-icon-download-in-svg-png-gif-file-formats--social-media-music-brand-pack-logos-icons-2673771.png?f=webp&w=256",
-    "poster": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?q=80&w=800&auto=format&fit=crop",
-    "desc": "Millions of songs and podcasts."
+    "category": "Movies",
+    "isLive": false,
+    "isFavorite": true,
+    "logo": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=200&auto=format&fit=crop",
+    "poster": "https://images.unsplash.com/photo-1534447677768-be436bb09401?q=80&w=800&auto=format&fit=crop",
+    "desc": "Watch latest HD Movies, TV Shows & Streaming Portals."
   },
   {
     "id": "w8",
@@ -82,10 +82,10 @@
     "url": "https://dulo.cx/",
     "category": "Live TV",
     "isLive": true,
-    "isFavorite": false,
-    "logo": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=200&auto=format&fit=crop",
-    "poster": "https://images.unsplash.com/photo-1524178232363-1fb2b075b655?q=80&w=800&auto=format&fit=crop",
-    "desc": "Ideas worth spreading from global visionaries."
+    "isFavorite": true,
+    "logo": "https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=200&auto=format&fit=crop",
+    "poster": "https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=800&auto=format&fit=crop",
+    "desc": "Live TV channels, sports, news, and entertainment streams."
   },
   {
     "id": "w9",

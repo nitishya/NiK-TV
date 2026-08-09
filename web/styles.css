@@ -1006,10 +1006,11 @@ input:checked + .slider:before { transform: translateX(24px); }
    RESPONSIVE BREAKPOINTS (TV 1080p, Tablet, Mobile)
    ========================================================================== */
 
-/* 1. TV & DESKTOP 1920x1080 (FIT SINGLE SCREEN, NO VERTICAL SCROLL ON TV) */
+/* 1. TV & DESKTOP 1920x1080 (SMOOTH SCROLLING ENABLED) */
 @media screen and (min-width: 1600px) {
   body.tv-mode {
-    overflow: hidden; /* No vertical scroll on TV */
+    overflow-y: auto; /* Enable smooth scrolling on large TV screens & monitors */
+    scroll-behavior: smooth;
   }
   body.tv-mode .content-container {
     padding: 20px 36px;
@@ -1018,7 +1019,7 @@ input:checked + .slider:before { transform: translateX(24px); }
     grid-template-columns: repeat(5, 1fr); /* 5 columns */
   }
   body.tv-mode .hero-card {
-    height: 210px;
+    height: 220px;
   }
 }
 
