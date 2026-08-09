@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Group by categories
     const categories = activeCategory === 'All' 
-      ? ['Favorites', 'Live TV', 'Movies', 'Sports', 'News', 'Music', 'Education', 'Shopping', 'Technology']
+      ? ['Favorites', 'Live TV', 'Movies', 'Sports', 'News', 'Music', 'Education', 'Shopping', 'Technology', 'Games']
       : [activeCategory];
 
     categories.forEach(cat => {
@@ -372,7 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <img class="card-poster-img" src="${site.poster || ''}" alt="${site.name || ''}" loading="lazy">
         <div class="card-glass-overlay">
           <div class="card-top-row">
-            ${site.isLive ? '<span class="live-badge"><i class="fa-solid fa-circle"></i> LIVE</span>' : '<span></span>'}
+            ${site.isLive ? '<span class="live-badge"><i class="fa-solid fa-circle"></i> LIVE</span>' : '<span class="ext-badge" title="Opens a third-party website"><i class="fa-solid fa-arrow-up-right-from-square"></i> External</span>'}
             <i class="fa-${site.isFavorite ? 'solid' : 'regular'} fa-star fav-star ${site.isFavorite ? 'active' : ''}" data-id="${site.id}"></i>
           </div>
           <div class="card-bottom-row">
@@ -499,7 +499,8 @@ document.addEventListener('DOMContentLoaded', () => {
       'Music': 'music',
       'Education': 'graduation-cap',
       'Shopping': 'cart-shopping',
-      'Technology': 'microchip'
+      'Technology': 'microchip',
+      'Games': 'gamepad'
     };
     return icons[cat] || 'layer-group';
   }
@@ -690,6 +691,85 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', () => {
     if (notificationPanel) notificationPanel.classList.add('hidden');
     if (profileMenu) profileMenu.classList.add('hidden');
+  });
+
+  // --- REPORT LINK MODAL & DISCLAIMER NAVIGATION ---
+  const CONTACT_EMAIL = "admin@nik-tv.com";
+
+  const reportModal = document.getElementById('report-modal');
+  const btnCloseReport = document.getElementById('btn-close-report');
+  const reportLinkForm = document.getElementById('report-link-form');
+
+  function openReportModal(siteName = '', siteUrl = '') {
+    if (siteName) document.getElementById('report-title').value = siteName;
+    if (siteUrl) document.getElementById('report-url').value = siteUrl;
+    if (reportModal) reportModal.classList.remove('hidden');
+  }
+
+  const btnFooterReport = document.getElementById('btn-footer-report');
+  if (btnFooterReport) {
+    btnFooterReport.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openReportModal();
+    });
+  }
+
+  const btnDisclaimerReport = document.getElementById('btn-disclaimer-report');
+  if (btnDisclaimerReport) {
+    btnDisclaimerReport.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openReportModal();
+    });
+  }
+
+  const btnDisclaimerReportBottom = document.getElementById('btn-disclaimer-report-bottom');
+  if (btnDisclaimerReportBottom) {
+    btnDisclaimerReportBottom.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openReportModal();
+    });
+  }
+
+  if (btnCloseReport) {
+    btnCloseReport.addEventListener('click', () => {
+      reportModal.classList.add('hidden');
+    });
+  }
+
+  if (reportLinkForm) {
+    reportLinkForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('report-title').value.trim();
+      const url = document.getElementById('report-url').value.trim();
+      const reason = document.getElementById('report-reason').value;
+      const details = document.getElementById('report-details').value.trim();
+      const email = document.getElementById('report-email').value.trim();
+
+      const subject = encodeURIComponent(`[Nik-TV Report] Link Review Request: ${title}`);
+      const body = encodeURIComponent(`Website Name: ${title}\nWebsite URL: ${url}\nReason: ${reason}\nDetails: ${details}\nSender Email: ${email || 'Not provided'}`);
+
+      window.location.href = `mailto:${CONTACT_EMAIL}?subject=${subject}&body=${body}`;
+
+      alert("Thank you for your report. Opening your default mail client to dispatch this review request.");
+      reportLinkForm.reset();
+      reportModal.classList.add('hidden');
+    });
+  }
+
+  const btnBackHome = document.getElementById('btn-back-home');
+  if (btnBackHome) {
+    btnBackHome.addEventListener('click', () => {
+      switchViewPanel('home-view');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  // Support inline disclaimer link buttons
+  document.querySelectorAll('.footer-link-inline').forEach(btn => {
+    btn.addEventListener('click', () => {
+      switchViewPanel(btn.dataset.target);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
   });
 
   // Settings: Reset all data action

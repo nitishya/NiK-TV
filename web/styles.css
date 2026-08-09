@@ -1420,5 +1420,115 @@ input:checked + .slider:before { transform: translateX(24px); }
   }
 }
 
+/* ==========================================================================
+   DISCLAIMER & EXTERNAL LINK BADGES STYLES
+   ========================================================================== */
+.ext-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--text-sub);
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  backdrop-filter: blur(8px);
+}
+
+.footer-disclaimer-box {
+  margin-top: 24px;
+  padding: 20px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.footer-disclaimer-box .disclaimer-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footer-disclaimer-box .disclaimer-text {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.footer-link-inline {
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  font-family: var(--font-family);
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+/* Disclaimer Page Panel */
+.disclaimer-container {
+  padding: 36px;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.disclaimer-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.disclaimer-page-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.disclaimer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 20px;
+}
+
+.disclaimer-section h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.disclaimer-section p {
+  font-size: 0.95rem;
+  color: var(--text-sub);
+  line-height: 1.6;
+}
+
+.disclaimer-section ul {
+  padding-left: 24px;
+  color: var(--text-sub);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.disclaimer-action-box {
+  margin-top: 12px;
+}
+
+
 
 
