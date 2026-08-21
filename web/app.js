@@ -319,39 +319,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const featured = websites.slice(0, 4);
 
     featured.forEach(site => {
-      const card = document.createElement('div');
-      card.className = 'hero-card focusable';
-      card.tabIndex = 0;
-      card.innerHTML = `
-        <img class="hero-bg" src="${site.poster || ''}" alt="${site.name || ''}">
-        <div class="hero-overlay">
-          <div class="hero-meta">
-            <img class="hero-logo" src="${site.logo || ''}" alt="${site.name || ''}">
-            <span class="hero-name">${site.name || 'Website'}</span>
-          </div>
-          <p class="hero-desc">${site.desc || ''}</p>
-          <div class="hero-actions">
-            <button class="btn-open focusable"><i class="fa-solid fa-play"></i> Open Website</button>
-            <button class="btn-icon-circle focusable btn-fav-toggle" data-id="${site.id}"><i class="fa-${site.isFavorite ? 'solid' : 'regular'} fa-star"></i></button>
-          </div>
-        </div>
-      `;
-
-      const heroBg = card.querySelector('.hero-bg');
-      attachSafeImageLoading(heroBg, card, site.name, site.url, false);
-
-      const heroLogo = card.querySelector('.hero-logo');
-      attachSafeImageLoading(heroLogo, card.querySelector('.hero-meta'), site.name, site.url, true);
-
-      card.addEventListener('click', () => openWebsite(site));
-      const favBtn = card.querySelector('.btn-fav-toggle');
-      favBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleFavorite(site.id);
-        renderAll();
-      });
-
-      heroCarousel.appendChild(card);
+      heroCarousel.appendChild(createWebsiteCard(site));
     });
   }
 
@@ -423,38 +391,36 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- CREATE WEBSITE MOVIE POSTER CARD ---
+  // --- REUSABLE MASTER WEBSITE CARD COMPONENT ---
   function createWebsiteCard(site) {
     const card = document.createElement('div');
     card.className = 'website-card focusable';
     card.tabIndex = 0;
     card.innerHTML = `
-      <div class="card-poster">
-        <img class="card-poster-img" src="${site.poster || ''}" alt="${site.name || ''}" loading="lazy">
-        <div class="card-glass-overlay">
-          <div class="card-top-row">
-            <div class="top-brand-badge">${site.name || 'Website'}</div>
-            <div class="top-row-right">
-              ${site.isLive ? '<span class="live-badge"><i class="fa-solid fa-circle"></i> LIVE</span>' : '<span class="ext-badge" title="Opens a third-party website"><i class="fa-solid fa-arrow-up-right-from-square"></i> External</span>'}
-              <i class="fa-${site.isFavorite ? 'solid' : 'regular'} fa-star fav-star ${site.isFavorite ? 'active' : ''}" data-id="${site.id}"></i>
-            </div>
-          </div>
-          <div class="card-bottom-row">
+      <img class="card-poster-img" src="${site.poster || ''}" alt="${site.name || ''}" loading="lazy">
+      <div class="card-glass-overlay">
+        <div class="card-top-row">
+          ${site.isLive ? '<span class="live-badge"><i class="fa-solid fa-circle"></i> LIVE</span>' : '<span class="ext-badge" title="Opens a third-party website"><i class="fa-solid fa-arrow-up-right-from-square"></i> External</span>'}
+        </div>
+        <div class="card-middle-content">
+          <div class="card-brand-header">
             <img class="site-icon" src="${site.logo || ''}" alt="${site.name || ''}">
-            <div class="site-info">
-              <div class="site-name">${site.name || 'Website'}</div>
-              <div class="site-cat"><span class="online-dot"></span> ${site.category || 'Portal'}</div>
-            </div>
+            <div class="site-name">${site.name || 'Website'}</div>
+          </div>
+          <p class="card-desc">${site.desc || ''}</p>
+          <div class="card-actions">
+            <button class="btn-open focusable"><i class="fa-solid fa-play"></i> Open Website</button>
+            <button class="btn-icon-circle focusable btn-fav-toggle" data-id="${site.id}" title="Toggle Favorite"><i class="fa-${site.isFavorite ? 'solid' : 'regular'} fa-star fav-star ${site.isFavorite ? 'active' : ''}"></i></button>
           </div>
         </div>
       </div>
     `;
 
     const posterImg = card.querySelector('.card-poster-img');
-    attachSafeImageLoading(posterImg, card.querySelector('.card-poster'), site.name, site.url, false);
+    attachSafeImageLoading(posterImg, card, site.name, site.url, false);
 
     const logoImg = card.querySelector('.site-icon');
-    attachSafeImageLoading(logoImg, card.querySelector('.card-bottom-row'), site.name, site.url, true);
+    attachSafeImageLoading(logoImg, card.querySelector('.card-brand-header'), site.name, site.url, true);
 
     // Click -> Navigate directly to website URL
     card.addEventListener('click', () => openWebsite(site));
@@ -463,8 +429,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Favorite star click
-    const favStar = card.querySelector('.fav-star');
-    favStar.addEventListener('click', (e) => {
+    const favBtn = card.querySelector('.btn-fav-toggle');
+    favBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleFavorite(site.id);
       renderAll();

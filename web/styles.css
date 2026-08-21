@@ -599,38 +599,33 @@ body, html {
   transition: var(--transition);
   display: flex;
   flex-direction: column;
-  aspect-ratio: 16 / 10;
+  height: 240px;
 }
 
 .website-card:hover {
-  transform: scale(1.05) translateY(-6px);
+  transform: scale(1.03) translateY(-4px);
   border-color: var(--secondary);
   box-shadow: var(--shadow-card), 0 0 25px var(--primary-glow);
   z-index: 10;
 }
 
-.card-poster {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-}
-
-.card-poster img {
+.card-poster-img {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
 }
 
-.website-card:hover .card-poster img {
-  transform: scale(1.1);
+.website-card:hover .card-poster-img {
+  transform: scale(1.08);
 }
 
 .card-glass-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(15, 20, 38, 0.95) 90%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(11, 16, 32, 0.92) 80%);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -640,31 +635,58 @@ body, html {
 .card-top-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 8px;
 }
 
-.top-brand-badge {
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: #FFFFFF;
-  font-size: 0.72rem;
+.card-middle-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-brand-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.site-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.site-name {
+  font-size: 1.15rem;
   font-weight: 800;
-  padding: 4px 10px;
-  border-radius: var(--radius-sm);
-  letter-spacing: 0.3px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  color: #FFFFFF;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 65%;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
-  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.top-row-right {
+.card-desc {
+  font-size: 0.82rem;
+  color: var(--text-sub);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+  height: 2.3em;
+}
+
+.card-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  margin-top: 4px;
 }
 
 .live-badge {
@@ -688,49 +710,6 @@ body, html {
 
 .fav-star.active, .fav-star:hover {
   color: var(--warning);
-}
-
-.card-bottom-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.site-icon {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--border);
-  object-fit: cover;
-}
-
-.site-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.site-name {
-  font-size: 1.05rem;
-  font-weight: 800;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.site-cat {
-  font-size: 0.75rem;
-  color: var(--text-sub);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.online-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent);
 }
 
 /* ==========================================================================
