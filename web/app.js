@@ -12,7 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- AVATAR PLACEHOLDER COMPONENT SYSTEM ---
   function getWebsiteInitial(name, url) {
     if (name && name.trim().length > 0) {
-      const cleanName = name.trim();
+      const words = name.trim().split(/\s+/);
+      if (words.length >= 2) {
+        return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
+      }
+      // Single word name: check camelCase or return first letter
+      const cleanName = words[0];
+      const caps = cleanName.match(/[A-Z]/g);
+      if (caps && caps.length >= 2) {
+        return (caps[0] + caps[1]).toUpperCase();
+      }
       return cleanName.charAt(0).toUpperCase();
     }
     if (url && url.trim().length > 0) {

@@ -127,8 +127,8 @@
     "category": "Movies",
     "isLive": false,
     "isFavorite": true,
-    "logo": "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=200&auto=format&fit=crop",
-    "poster": "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=800&auto=format&fit=crop",
+    "logo": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=200&auto=format&fit=crop",
+    "poster": "https://images.unsplash.com/photo-1478720568477-152d9b164e26?q=80&w=800&auto=format&fit=crop",
     "desc": "High quality movie streaming hub."
   },
   {
@@ -163,5 +163,38 @@
     "logo": "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=200&auto=format&fit=crop",
     "poster": "https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=800&auto=format&fit=crop",
     "desc": "Action stunt driving WebGL browser game."
+  },
+  {
+    "id": "w16",
+    "name": "AllSiteHub",
+    "url": "https://www.allsitehub.site/",
+    "category": "Technology",
+    "isLive": false,
+    "isFavorite": true,
+    "logo": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=200&auto=format&fit=crop",
+    "poster": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop",
+    "desc": "All-in-one web portal directory & site index."
+  },
+  {
+    "id": "w17",
+    "name": "Cinezo",
+    "url": "https://www.cinezo.org/",
+    "category": "Movies",
+    "isLive": false,
+    "isFavorite": true,
+    "logo": "https://images.unsplash.com/photo-1518676599625-583562e6522c?q=80&w=200&auto=format&fit=crop",
+    "poster": "https://images.unsplash.com/photo-1518676599625-583562e6522c?q=80&w=800&auto=format&fit=crop",
+    "desc": "Stream cinema classics, TV shows & entertainment."
+  },
+  {
+    "id": "w18",
+    "name": "TopWebList",
+    "url": "https://topweblist.net/",
+    "category": "Technology",
+    "isLive": false,
+    "isFavorite": true,
+    "logo": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=200&auto=format&fit=crop",
+    "poster": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=800&auto=format&fit=crop",
+    "desc": "Curated list of top websites, resources & portals."
   }
 ]
