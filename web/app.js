@@ -12,15 +12,32 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- AVATAR PLACEHOLDER COMPONENT SYSTEM ---
   function getWebsiteInitial(name, url) {
     if (name && name.trim().length > 0) {
-      const words = name.trim().split(/\s+/);
+      const cleanName = name.trim();
+      const lower = cleanName.toLowerCase();
+      
+      // Known website initial overrides for balanced OTT badges
+      if (lower === 'netflix') return 'N';
+      if (lower === 'pflix') return 'P';
+      if (lower === 'ott adda') return 'OA';
+      if (lower === '7reels') return '7';
+      if (lower === 'cinegram tv') return 'CT';
+      if (lower === 'vidbox') return 'V';
+      if (lower === 'supernova') return 'S';
+      if (lower === 'dulo tv') return 'DT';
+      if (lower === 'amazon shopping') return 'AS';
+      if (lower === 'multimovies') return 'M';
+      if (lower === 'bollyflix') return 'B';
+      if (lower === 'mappl') return 'M';
+      if (lower === 'rivestream') return 'R';
+      if (lower === 'nightflix') return 'N';
+      if (lower === 'stunt paradise') return 'SP';
+      if (lower === 'allsitehub') return 'A';
+      if (lower === 'cinezo') return 'C';
+      if (lower === 'topweblist') return 'T';
+
+      const words = cleanName.split(/\s+/);
       if (words.length >= 2) {
         return (words[0].charAt(0) + words[1].charAt(0)).toUpperCase();
-      }
-      // Single word name: check camelCase or return first letter
-      const cleanName = words[0];
-      const caps = cleanName.match(/[A-Z]/g);
-      if (caps && caps.length >= 2) {
-        return (caps[0] + caps[1]).toUpperCase();
       }
       return cleanName.charAt(0).toUpperCase();
     }
