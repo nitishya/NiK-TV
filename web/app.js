@@ -316,9 +316,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- RENDER HERO CAROUSEL ("CONTINUE BROWSING") ---
   function renderHeroCarousel() {
     heroCarousel.innerHTML = '';
-    const featured = websites.slice(0, 4);
+    // Use recent history if available, otherwise default to top featured sites
+    const list = recentHistory.length > 0 ? recentHistory : websites.slice(0, 6);
 
-    featured.forEach(site => {
+    list.forEach(site => {
       heroCarousel.appendChild(createWebsiteCard(site));
     });
   }
@@ -349,9 +350,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Track displayed site IDs to prevent duplicate cards across multiple category rows
     const displayedSiteIds = new Set();
 
-    // Group by categories
+    // Only 3 main categories: Movies, Live TV, Sports
     const categories = activeCategory === 'All' 
-      ? ['Favorites', 'Live TV', 'Movies', 'Sports', 'News', 'Music', 'Education', 'Shopping', 'Technology', 'Games']
+      ? ['Favorites', 'Movies', 'Live TV', 'Sports']
       : [activeCategory];
 
     categories.forEach(cat => {
@@ -453,8 +454,11 @@ document.addEventListener('DOMContentLoaded', () => {
     if (recentHistory.length > 10) recentHistory.pop();
     localStorage.setItem('niktv_recent', JSON.stringify(recentHistory));
 
-    // Open target website URL directly
-    window.location.href = site.url;
+    // Refresh Continue Browsing hero section
+    renderHeroCarousel();
+
+    // Open target website URL in a new tab so user stays on Nik-TV
+    window.open(site.url, '_blank', 'noopener,noreferrer');
   }
 
   // --- FAVORITES TOGGLE ---
