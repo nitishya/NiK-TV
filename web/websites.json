@@ -196,5 +196,27 @@
     "logo": "https://api.dicebear.com/9.x/initials/png?seed=TopWebList&backgroundColor=0284C7&textColor=ffffff&fontWeight=700",
     "poster": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop",
     "desc": "Curated list of top websites, resources & portals."
+  },
+  {
+    "id": "w19",
+    "name": "DOS Zone",
+    "url": "https://dos.zone/",
+    "category": "Games",
+    "isLive": false,
+    "isFavorite": true,
+    "logo": "https://api.dicebear.com/9.x/initials/png?seed=DOS-Zone&backgroundColor=16A34A&textColor=ffffff&fontWeight=700",
+    "poster": "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=1200&auto=format&fit=crop",
+    "desc": "Play classic retro MS-DOS games directly in your browser."
+  },
+  {
+    "id": "w20",
+    "name": "Quenq",
+    "url": "https://quenq.com/",
+    "category": "Games",
+    "isLive": false,
+    "isFavorite": true,
+    "logo": "https://api.dicebear.com/9.x/initials/png?seed=Quenq&backgroundColor=9333EA&textColor=ffffff&fontWeight=700",
+    "poster": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=1200&auto=format&fit=crop",
+    "desc": "Online gaming portal with web games, arcade, and puzzles."
   }
 ]

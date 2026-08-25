@@ -313,6 +313,60 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // --- RENDER FEATURED SPOTLIGHT BANNER ---
+  function renderFeaturedBanner() {
+    const featuredBannerContainer = document.getElementById('featured-banner-container');
+    if (!featuredBannerContainer) return;
+    featuredBannerContainer.innerHTML = '';
+
+    // Pick first favorite or first available website as featured
+    const featuredSite = websites.find(s => s.name.toLowerCase() === 'netflix') || websites[0];
+    if (!featuredSite) return;
+
+    featuredBannerContainer.innerHTML = `
+      <div class="featured-banner-bg" style="background-image: url('${featuredSite.poster || ''}');"></div>
+      <div class="featured-banner-overlay">
+        <div class="featured-badge-tag"><i class="fa-solid fa-fire text-warning"></i> FEATURED SPOTLIGHT</div>
+        <div class="featured-brand-row">
+          <img class="featured-logo" src="${featuredSite.logo || ''}" alt="${featuredSite.name}">
+          <h1 class="featured-title">${featuredSite.name}</h1>
+        </div>
+        <p class="featured-desc">${featuredSite.desc || ''}</p>
+        <div class="featured-actions">
+          <button class="btn-primary btn-featured-play focusable" id="btn-featured-open"><i class="fa-solid fa-play"></i> Open Website</button>
+          <button class="btn-secondary focusable btn-featured-fav" id="btn-featured-fav"><i class="fa-${featuredSite.isFavorite ? 'solid' : 'regular'} fa-star text-warning"></i> ${featuredSite.isFavorite ? 'Bookmarked' : 'Bookmark'}</button>
+        </div>
+      </div>
+    `;
+
+    const bannerBg = featuredBannerContainer.querySelector('.featured-banner-bg');
+    if (bannerBg) {
+      const img = new Image();
+      img.src = featuredSite.poster || '';
+      img.onerror = () => {
+        bannerBg.style.backgroundImage = 'none';
+        bannerBg.style.background = 'linear-gradient(135deg, #1E1B4B 0%, #0F172A 100%)';
+      };
+    }
+
+    const btnOpen = featuredBannerContainer.querySelector('#btn-featured-open');
+    if (btnOpen) {
+      btnOpen.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openWebsite(featuredSite);
+      });
+    }
+
+    const btnFav = featuredBannerContainer.querySelector('#btn-featured-fav');
+    if (btnFav) {
+      btnFav.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleFavorite(featuredSite.id);
+        renderAll();
+      });
+    }
+  }
+
   // --- RENDER HERO CAROUSEL ("CONTINUE BROWSING") ---
   function renderHeroCarousel() {
     heroCarousel.innerHTML = '';
@@ -350,9 +404,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Track displayed site IDs to prevent duplicate cards across multiple category rows
     const displayedSiteIds = new Set();
 
-    // Only 3 main categories: Movies, Live TV, Sports
+    // TV Categories: Favorites, Movies, Live TV, Sports, Games
     const categories = activeCategory === 'All' 
-      ? ['Favorites', 'Movies', 'Live TV', 'Sports']
+      ? ['Favorites', 'Movies', 'Live TV', 'Sports', 'Games']
       : [activeCategory];
 
     categories.forEach(cat => {
@@ -560,6 +614,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function renderAll() {
+    renderFeaturedBanner();
     renderHeroCarousel();
     renderOTTSections();
   }
