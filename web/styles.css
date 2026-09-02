@@ -4,59 +4,59 @@
 
 :root {
   /* Light Theme Colors (Default) */
-  --bg-main: #F5F7FB;
+  --bg-main: #F4F6FB;
   --bg-surface: #FFFFFF;
-  --bg-surface-hover: #F1F5F9;
+  --bg-surface-hover: #EEF2F6;
   --bg-card: rgba(255, 255, 255, 0.95);
-  --bg-header: rgba(245, 247, 251, 0.85);
+  --bg-header: rgba(244, 246, 251, 0.88);
 
   --primary: #7C3AED;
   --primary-hover: #6D28D9;
-  --primary-glow: rgba(124, 58, 237, 0.2);
+  --primary-glow: rgba(124, 58, 237, 0.3);
 
   --secondary: #9333EA;
   --accent: #22C55E;
   --warning: #F59E0B;
   --danger: #EF4444;
 
-  --text-main: #111827;
-  --text-sub: #64748B;
+  --text-main: #0F172A;
+  --text-sub: #475569;
   --text-muted: #94A3B8;
-  --border: #E5E7EB;
+  --border: #E2E8F0;
   --border-focus: #7C3AED;
 
-  --radius-card: 20px;
+  --radius-card: 16px;
   --radius-sm: 10px;
   --radius-full: 9999px;
 
   --font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
-  --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
 }
 
 [data-theme="dark"] {
-  /* Dark Theme Colors */
-  --bg-main: #0B1020;
-  --bg-surface: #151A2F;
-  --bg-surface-hover: #1E2542;
-  --bg-card: rgba(21, 26, 47, 0.7);
-  --bg-header: rgba(11, 16, 32, 0.85);
+  /* Dark Theme Colors - Deep Obsidian TV Aesthetic */
+  --bg-main: #070B19;
+  --bg-surface: #11172A;
+  --bg-surface-hover: #1A223B;
+  --bg-card: rgba(17, 23, 42, 0.85);
+  --bg-header: rgba(7, 11, 25, 0.88);
 
   --primary: #7C3AED;
   --primary-hover: #6D28D9;
-  --primary-glow: rgba(124, 58, 237, 0.45);
+  --primary-glow: rgba(124, 58, 237, 0.5);
 
   --secondary: #A855F7;
   --accent: #22C55E;
   --warning: #F59E0B;
   --danger: #EF4444;
 
-  --text-main: #FFFFFF;
-  --text-sub: #B6C2D9;
+  --text-main: #F8FAFC;
+  --text-sub: #94A3B8;
   --text-muted: #64748B;
-  --border: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.09);
   --border-focus: #A855F7;
-  --shadow-card: 0 15px 35px rgba(0, 0, 0, 0.6);
+  --shadow-card: 0 15px 35px rgba(0, 0, 0, 0.65);
 }
 
 * {
@@ -76,6 +76,13 @@ body, html {
   overflow-x: hidden;
   font-size: 15px;
   user-select: none;
+}
+
+/* TV & Keyboard Focus Outlines */
+.focusable:focus-visible, .focusable:focus {
+  outline: none;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px var(--primary-glow), 0 8px 25px rgba(124, 58, 237, 0.35) !important;
 }
 
 /* ==========================================================================
@@ -693,16 +700,16 @@ body, html {
   border: 1px solid var(--border);
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease;
   display: flex;
   flex-direction: column;
-  height: 250px;
+  height: 245px;
 }
 
 .website-card:hover, .website-card:focus {
-  transform: scale(1.03) translateY(-4px);
+  transform: scale(1.02) translateY(-4px);
   border-color: var(--primary);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.6), 0 0 25px var(--primary-glow);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--primary-glow);
   outline: none;
   z-index: 10;
 }
@@ -716,14 +723,14 @@ body, html {
   transition: transform 0.5s ease;
 }
 
-.website-card:hover .card-poster-img {
-  transform: scale(1.08);
+.website-card:hover .card-poster-img, .website-card:focus .card-poster-img {
+  transform: scale(1.06);
 }
 
 .card-glass-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(11, 16, 32, 0.92) 80%);
+  background: linear-gradient(180deg, rgba(0,0,0,0.12) 0%, rgba(7, 11, 25, 0.7) 45%, rgba(7, 11, 25, 0.96) 90%);
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -740,44 +747,45 @@ body, html {
 .card-middle-content {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .card-brand-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .site-icon {
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border-radius: 10px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   object-fit: cover;
   flex-shrink: 0;
 }
 
 .site-name {
-  font-size: 1.15rem;
-  font-weight: 800;
+  font-size: 1.05rem; /* ~16-17px clean typography */
+  font-weight: 700;
   color: #FFFFFF;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 0.2px;
 }
 
 .card-desc {
-  font-size: 0.82rem;
-  color: var(--text-sub);
+  font-size: 0.78rem; /* ~11-12px clean description */
+  color: #CBD5E1;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  line-height: 1.4;
-  height: 2.3em;
+  line-height: 1.45;
+  height: 2.35em;
 }
 
 .card-actions {
