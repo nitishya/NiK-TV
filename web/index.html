@@ -24,9 +24,10 @@
   <meta property="twitter:image" content="https://images.unsplash.com/photo-1593784991095-a205069470b6?q=80&w=1200&auto=format&fit=crop">
 
   <!-- Favicon & Mobile Web App Manifest -->
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/nik-tv-logo.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/nik-tv-logo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/nik-tv-logo.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/nik-tv-logo.png">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0B1020">
 
@@ -44,7 +45,7 @@
   <div id="splash-screen" class="splash-screen">
     <div class="splash-content">
       <div class="splash-logo">
-        <i class="fa-solid fa-play splash-play"></i>
+        <img class="splash-brand-img" src="assets/nik-tv-logo.png" alt="Nik-TV">
         <span>Nik<span class="highlight">TV</span></span>
       </div>
       <div class="splash-spinner"></div>
@@ -94,9 +95,7 @@
       <header class="header" id="header">
         <div class="header-left">
           <div class="brand">
-            <div class="logo-box">
-              <i class="fa-solid fa-tv"></i>
-            </div>
+            <img class="brand-logo-img" src="assets/nik-tv-logo.png" alt="Nik-TV">
             <span class="brand-name">Nik<span class="brand-highlight">-TV</span></span>
           </div>
         </div>
@@ -357,7 +356,10 @@
       <footer class="app-footer">
         <div class="footer-container">
           <div class="footer-section brand-info">
-            <h3 class="footer-logo">Nik<span class="logo-highlight">TV</span></h3>
+            <div class="footer-logo-row">
+              <img class="footer-logo-img" src="assets/nik-tv-logo.png" alt="Nik-TV">
+              <h3 class="footer-logo">Nik<span class="logo-highlight">TV</span></h3>
+            </div>
             <p class="brand-desc">Premium OTT-style Website Launcher & Portal Hub. Streamline your browsing experience across TV and web.</p>
             <div class="social-links">
               <a href="https://github.com/nitishya" target="_blank" class="social-icon focusable" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>

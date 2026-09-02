@@ -110,6 +110,16 @@ body, html {
   font-size: 3.5rem;
   font-weight: 900;
   letter-spacing: -1px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.splash-brand-img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 18px var(--primary-glow));
 }
 
 .splash-play {
@@ -260,17 +270,16 @@ body, html {
   gap: 12px;
 }
 
-.logo-box {
+.brand-logo-img {
   width: 44px;
   height: 44px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.3rem;
-  color: white;
-  box-shadow: 0 0 20px var(--primary-glow);
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px var(--primary-glow));
+  transition: transform 0.25s ease;
+}
+
+.brand-logo-img:hover {
+  transform: scale(1.06);
 }
 
 .brand-name {
@@ -1276,11 +1285,24 @@ input:checked + .slider:before { transform: translateX(24px); }
   letter-spacing: 0.5px;
 }
 
+.footer-logo-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.footer-logo-img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 10px var(--primary-glow));
+}
+
 .brand-info .footer-logo {
   font-size: 1.8rem;
   font-weight: 900;
   color: white;
-  margin-bottom: 12px;
 }
 
 .brand-info .logo-highlight {
