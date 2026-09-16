@@ -268,17 +268,44 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('offline', updateNetworkStatus);
   updateNetworkStatus();
 
-  // --- SIDE MENU NAVIGATION ---
+  // --- SIDE MENU NAVIGATION & MOBILE NAVIGATION ---
   btnToggleMenu.addEventListener('click', () => {
     sideMenu.classList.toggle('expanded');
     sideMenu.classList.toggle('collapsed');
   });
+
+  const btnMobileMenu = document.getElementById('btn-mobile-menu');
+  if (btnMobileMenu) {
+    btnMobileMenu.addEventListener('click', () => {
+      // Toggle drawer or navigate home on mobile hamburger
+      switchViewPanel('home-view');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
+  const btnMobileSearchTrigger = document.getElementById('btn-mobile-search-trigger');
+  const btnCloseMobileSearch = document.getElementById('btn-close-mobile-search');
+  const searchBoxContainer = document.getElementById('search-box-container');
+
+  if (btnMobileSearchTrigger && searchBoxContainer) {
+    btnMobileSearchTrigger.addEventListener('click', () => {
+      searchBoxContainer.classList.add('mobile-expanded');
+      searchInput.focus();
+    });
+  }
+
+  if (btnCloseMobileSearch && searchBoxContainer) {
+    btnCloseMobileSearch.addEventListener('click', () => {
+      searchBoxContainer.classList.remove('mobile-expanded');
+    });
+  }
 
   // Helper to switch view panels
   function switchViewPanel(targetId) {
     // Hide open modals
     notificationPanel.classList.add('hidden');
     profileMenu.classList.add('hidden');
+    if (searchBoxContainer) searchBoxContainer.classList.remove('mobile-expanded');
     
     document.querySelectorAll('.nav-item').forEach(i => {
       if (i.dataset.target === targetId) {
@@ -287,6 +314,15 @@ document.addEventListener('DOMContentLoaded', () => {
         i.classList.remove('active');
       }
     });
+
+    document.querySelectorAll('.mobile-nav-item').forEach(i => {
+      if (i.dataset.target === targetId) {
+        i.classList.add('active');
+      } else {
+        i.classList.remove('active');
+      }
+    });
+
     document.querySelectorAll('.view-panel').forEach(v => {
       if (v.id === targetId) {
         v.classList.add('active');
@@ -300,9 +336,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (targetId === 'categories-view') renderCategoriesView();
   }
 
-  document.querySelectorAll('.nav-item').forEach(item => {
+  document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(item => {
     item.addEventListener('click', () => {
       switchViewPanel(item.dataset.target);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
   });
 

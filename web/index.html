@@ -94,6 +94,9 @@
       <!-- STICKY GLASSMORPHISM HEADER -->
       <header class="header" id="header">
         <div class="header-left">
+          <button id="btn-mobile-menu" class="icon-btn mobile-menu-btn focusable" title="Toggle Menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
           <div class="brand">
             <img class="brand-logo-img" src="assets/nik-tv-logo.png" alt="Nik-TV">
             <span class="brand-name">Nik<span class="brand-highlight">-TV</span></span>
@@ -101,13 +104,15 @@
         </div>
 
         <!-- CENTER SEARCH BAR -->
-        <div class="search-box-container">
+        <div class="search-box-container" id="search-box-container">
           <i class="fa-solid fa-magnifying-glass search-icon"></i>
           <input type="text" id="search-input" class="search-input focusable" placeholder="Search websites, channels, streams..." autocomplete="off" spellcheck="false">
           <button id="btn-clear-search" class="clear-search-btn hidden"><i class="fa-solid fa-circle-xmark"></i></button>
+          <button id="btn-close-mobile-search" class="close-mobile-search-btn focusable"><i class="fa-solid fa-xmark"></i></button>
         </div>
 
         <div class="header-right">
+          <button class="icon-btn mobile-search-trigger focusable" id="btn-mobile-search-trigger" title="Search"><i class="fa-solid fa-magnifying-glass"></i></button>
           <button class="icon-btn focusable" id="btn-theme-toggle" title="Toggle Theme (T)"><i class="fa-solid fa-sun"></i></button>
           <button class="icon-btn focusable" id="btn-add-modal" title="Add Website URL"><i class="fa-solid fa-plus"></i></button>
           <button class="icon-btn focusable" id="btn-notifications" title="Notifications"><i class="fa-solid fa-bell"></i><span class="notif-badge"></span></button>
@@ -400,6 +405,30 @@
         </footer>
 
     </div>
+
+    <!-- MOBILE BOTTOM NAVIGATION BAR -->
+    <nav class="mobile-bottom-nav" id="mobile-bottom-nav">
+      <button class="mobile-nav-item active focusable" data-target="home-view">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+      </button>
+      <button class="mobile-nav-item focusable" data-target="favorites-view">
+        <i class="fa-solid fa-star"></i>
+        <span>Favorites</span>
+      </button>
+      <button class="mobile-nav-item focusable" data-target="recent-view">
+        <i class="fa-solid fa-clock-rotate-left"></i>
+        <span>Recent</span>
+      </button>
+      <button class="mobile-nav-item focusable" data-target="categories-view">
+        <i class="fa-solid fa-border-all"></i>
+        <span>Categories</span>
+      </button>
+      <button class="mobile-nav-item focusable" data-target="settings-view">
+        <i class="fa-solid fa-gear"></i>
+        <span>Settings</span>
+      </button>
+    </nav>
   </div>
 
   <!-- CONTEXT MENU MODAL (TV LONG PRESS / RIGHT CLICK) -->

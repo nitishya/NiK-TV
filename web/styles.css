@@ -1665,47 +1665,416 @@ input:checked + .slider:before { transform: translateX(24px); }
 }
 
 /* ==========================================================================
-   RESPONSIVE BREAKPOINTS (TV FIRST 4-COLUMNS)
+   MOBILE & TABLET RESPONSIVE ENHANCEMENTS (< 768px and 768px-1024px)
    ========================================================================== */
-@media screen and (min-width: 1400px) {
-  .ott-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-  }
+
+/* Mobile menu toggle button (hidden on desktop) */
+.mobile-menu-btn {
+  display: none;
 }
 
-@media screen and (max-width: 1399px) and (min-width: 1024px) {
-  .ott-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
+.mobile-search-trigger {
+  display: none;
 }
 
-@media screen and (max-width: 1023px) and (min-width: 768px) {
+.close-mobile-search-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--text-sub);
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Mobile Bottom Navigation Bar (hidden on desktop) */
+.mobile-bottom-nav {
+  display: none;
+}
+
+/* TABLET STYLING (768px - 1024px) */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
   .ott-grid {
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: 18px;
   }
   .featured-banner-container {
-    height: 240px;
+    height: 250px;
+  }
+  .featured-title {
+    font-size: 1.6rem;
   }
 }
 
+/* MOBILE RESPONSIVE STYLING (< 768px) */
 @media screen and (max-width: 767px) {
-  .ott-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 14px;
+  /* 1. REMOVE DESKTOP SIDEBAR ON MOBILE */
+  .side-menu {
+    display: none !important;
+    width: 0 !important;
+    padding: 0 !important;
+    border: none !important;
   }
+
+  .main-wrapper {
+    width: 100% !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    max-width: 100vw !important;
+    overflow-x: hidden;
+  }
+
+  /* Prevent page horizontal scroll */
+  body, html, .app-layout {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+  }
+
+  /* 2. MOBILE HEADER */
+  .header {
+    height: 64px;
+    padding: 0 12px;
+    gap: 10px;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .brand-logo-img {
+    width: 34px;
+    height: 34px;
+  }
+
+  .brand-name {
+    display: inline-block;
+    font-size: 1.25rem;
+  }
+
+  /* Compact header action buttons */
+  .header-right {
+    gap: 6px;
+  }
+
+  .icon-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.95rem;
+  }
+
+  .profile-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  /* Compact Mobile Search Bar */
+  .search-box-container {
+    display: none; /* Hidden by default on mobile header, toggles with trigger */
+    position: absolute;
+    inset: 8px 12px;
+    z-index: 150;
+    max-width: none;
+    height: 48px;
+    background: var(--bg-surface);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  }
+
+  .search-box-container.mobile-expanded {
+    display: flex;
+  }
+
+  .mobile-search-trigger {
+    display: flex;
+  }
+
+  .close-mobile-search-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+  }
+
+  /* Hide desktop-only shortcut header buttons on mobile to avoid overcrowding */
+  #btn-notifications, #btn-header-fav, #btn-settings-page {
+    display: none;
+  }
+
+  /* 3. MOBILE CATEGORY NAVIGATION */
+  .category-bar-wrapper {
+    padding: 10px 16px;
+  }
+
+  .category-chips {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 4px;
+    scrollbar-width: none;
+    gap: 8px;
+  }
+
+  .category-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chip {
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    scroll-snap-align: start;
+  }
+
+  /* 4. CONTENT & SPACING */
+  .content-container {
+    padding: 16px 16px 90px 16px; /* Extra bottom padding so content doesn't get hidden behind bottom nav */
+  }
+
+  .view-panel {
+    gap: 24px;
+  }
+
+  .section-title-row {
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+    gap: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .section-subtitle {
+    font-size: 0.78rem;
+  }
+
+  /* 5. FEATURED SPOTLIGHT BANNER */
+  .featured-banner-section {
+    margin-bottom: 20px;
+  }
+
   .featured-banner-container {
     height: 220px;
+    border-radius: var(--radius-card);
   }
+
   .featured-banner-overlay {
-    padding: 20px;
+    padding: 16px;
+    gap: 8px;
+    max-width: 100%;
+    background: linear-gradient(180deg, rgba(7, 11, 25, 0.4) 0%, rgba(7, 11, 25, 0.92) 70%, rgba(7, 11, 25, 0.98) 100%);
   }
+
+  .featured-badge-tag {
+    font-size: 0.65rem;
+    padding: 2px 8px;
+  }
+
+  .featured-brand-row {
+    gap: 8px;
+  }
+
+  .featured-logo {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
   .featured-title {
-    font-size: 1.4rem;
+    font-size: 1.25rem;
+  }
+
+  .featured-desc {
+    font-size: 0.8rem;
+    line-height: 1.35;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .featured-actions {
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .btn-featured-play {
+    padding: 6px 14px;
+    font-size: 0.8rem;
+  }
+
+  .btn-featured-fav {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  /* 6. CONTINUE BROWSING MOBILE CAROUSEL */
+  .hero-carousel {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+  }
+
+  .hero-carousel::-webkit-scrollbar {
+    display: none;
+  }
+
+  .hero-carousel .website-card {
+    flex: 0 0 calc(100vw - 48px); /* Single card view on mobile touch carousel */
+    max-width: 340px;
+    height: 210px;
+    scroll-snap-align: center;
+  }
+
+  /* 7. ALL WEBSITE CARDS ON MOBILE */
+  .ott-grid {
+    grid-template-columns: 1fr; /* Single column card layout on mobile for full card visibility */
+    gap: 14px;
+  }
+
+  .website-card {
+    height: 210px;
+    border-radius: var(--radius-card);
+  }
+
+  .card-glass-overlay {
+    padding: 14px;
+  }
+
+  .site-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .site-name {
+    font-size: 1rem;
+  }
+
+  .card-desc {
+    font-size: 0.75rem;
+    line-height: 1.35;
+  }
+
+  /* 8. BUTTON DESIGN STANDARDIZATION */
+  .btn-primary, .btn-secondary, .btn-featured-play, .btn-featured-fav, .btn-open {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: white;
+    border: none;
+    border-radius: var(--radius-full);
+    font-family: var(--font-family);
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: var(--transition);
+  }
+
+  .btn-secondary, .btn-featured-fav {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .btn-primary:active, .btn-featured-play:active, .btn-open:active {
+    transform: scale(0.96);
+  }
+
+  /* 9. MOBILE BOTTOM NAVIGATION BAR */
+  .mobile-bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: var(--bg-header);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    z-index: 1000;
+    align-items: center;
+    justify-content: space-around;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+
+  .mobile-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background: transparent;
+    border: none;
+    color: var(--text-sub);
+    font-family: var(--font-family);
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 6px 0;
+    transition: var(--transition);
+  }
+
+  .mobile-nav-item i {
+    font-size: 1.15rem;
+  }
+
+  .mobile-nav-item.active {
+    color: var(--primary);
+  }
+
+  .mobile-nav-item.active i {
+    color: var(--primary);
+    filter: drop-shadow(0 0 6px var(--primary-glow));
+  }
+
+  /* 10. MOBILE FOOTER & DISCLAIMER */
+  .app-footer {
+    padding: 24px 16px 84px 16px;
+  }
+
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .footer-disclaimer-box {
+    margin-top: 16px;
+    padding: 14px;
+  }
+
+  .footer-disclaimer-box .disclaimer-title {
+    font-size: 0.88rem;
+  }
+
+  .footer-disclaimer-box .disclaimer-text {
+    font-size: 0.78rem;
+  }
+
+  .disclaimer-container {
+    padding: 16px;
+  }
+
+  .disclaimer-page-title {
+    font-size: 1.5rem;
   }
 }
+
 
 
 
