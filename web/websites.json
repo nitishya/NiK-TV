@@ -11,6 +11,17 @@
     "desc": "Explore a third-party entertainment portal featuring movies, television content, and online streaming options."
   },
   {
+    "id": "w21",
+    "name": "Aethoflix",
+    "url": "https://aethoflix-blond.vercel.app",
+    "category": "Movies",
+    "isLive": false,
+    "isFavorite": true,
+    "logo": "https://api.dicebear.com/9.x/initials/png?seed=Netflix&backgroundColor=E50914&textColor=ffffff&fontWeight=700",
+    "poster": "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=1200&auto=format&fit=crop",
+    "desc": "Explore a third-party entertainment portal featuring movies, television content, and online streaming options."
+  },
+  {
     "id": "w2",
     "name": "PFlix",
     "url": "https://pantyflix.com/",
