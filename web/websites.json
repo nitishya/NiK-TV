@@ -229,5 +229,27 @@
     "logo": "https://api.dicebear.com/9.x/initials/png?seed=Quenq&backgroundColor=9333EA&textColor=ffffff&fontWeight=700",
     "poster": "https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=1200&auto=format&fit=crop",
     "desc": "Online gaming portal with web games, arcade, and puzzles."
+  },
+   {
+    "id": "w22",
+    "name": "PVR Play",
+    "url": "https://pvrplay.live/",
+    "category": "Movies",
+    "isLive": false
+    "isFavorite": true,
+    "logo": "https://api.dicebear.com/9.x/initials/png?seed=PVRPlay&backgroundColor=E50914&textColor=ffffff&fontWeight=700",
+    "poster": "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=1200&auto=format&fit=crop",
+    "desc": "Explore a third-party entertainment portal featuring movies, television content, and online streaming options."
+  },
+   {
+    "id": "w23",
+    "name": "Nip Flix",
+    "url": "https://nippleflix.com/",
+    "category": "Movies",
+    "isLive": false
+    "isFavorite": true,
+    "logo": "https://api.dicebear.com/9.x/initials/png?seed=NipFlix&backgroundColor=E50914&textColor=ffffff&fontWeight=700",
+    "poster": "https://images.unsplash.com/photo-1574375927938-d5a98e8ffe85?q=80&w=1200&auto=format&fit=crop",
+    "desc": "Explore a third-party entertainment portal featuring movies, television content, and online streaming options."
   }
 ]
